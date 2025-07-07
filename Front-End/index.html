@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickSafe - Home</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/icons/shield-lock.svg">
+    <!-- Roboto font for clean look -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0a2342;
+            --blue: #1877f2;
+            --white: #fff;
+            --gray: #f8f9fa;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+            --text-primary: #0a2342;
+            --text-secondary: #3a4a5d;
+            --card-bg: #fff;
+            --footer-bg: #0a2342;
+            --footer-text: #fff;
+            --hero-overlay: rgba(10,35,66,0.65);
+        }
+        body.dark-mode, .dark-mode {
+            --navy: #e0e0e0;
+            --blue: #2196f3;
+            --white: #121212;
+            --gray: #1e1e1e;
+            --shadow: none;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --card-bg: #1e1e1e;
+            --footer-bg: #181818;
+            --footer-text: #e0e0e0;
+            --hero-overlay: rgba(18,18,18,0.82);
+        }
+        html, body {
+            height: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: var(--white) !important;
+        }
+        .container {
+            flex: 1 0 auto;
+        }
+        .navbar {
+            background: var(--white) !important;
+            box-shadow: 0 2px 8px rgba(10,35,66,0.04);
+            padding-top: 0.7rem;
+            padding-bottom: 0.7rem;
+        }
+        .navbar-brand {
+            color: var(--navy) !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+        }
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--blue);
+            margin-right: 0.5rem;
+        }
+        .dark-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--navy);
+            font-size: 1.5rem;
+            margin-left: 1rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .dark-mode .dark-toggle-btn {
+            color: #ffd600;
+        }
+        .profile-dropdown .dropdown-toggle {
+            background: none;
+            border: none;
+            color: var(--navy);
+            font-size: 1.3rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        .profile-dropdown .dropdown-menu {
+            min-width: 8rem;
+        }
+        .hero-section {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(135deg, #0a2342 0%, #1565c0 50%, #0d47a1 100%);
+            overflow: hidden;
+        }
+        
+        /* Enhanced Secure Network Transmission Background */
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                /* Primary network hub points */
+                radial-gradient(circle at 15% 25%, rgba(24, 119, 242, 0.25) 0%, transparent 35%),
+                radial-gradient(circle at 85% 75%, rgba(13, 71, 161, 0.3) 0%, transparent 40%),
+                radial-gradient(circle at 50% 20%, rgba(33, 150, 243, 0.2) 0%, transparent 30%),
+                radial-gradient(circle at 30% 80%, rgba(76, 175, 80, 0.15) 0%, transparent 35%),
+                radial-gradient(circle at 75% 35%, rgba(24, 119, 242, 0.22) 0%, transparent 32%),
+                /* Secondary security nodes */
+                radial-gradient(circle at 5% 60%, rgba(30, 136, 229, 0.18) 0%, transparent 25%),
+                radial-gradient(circle at 95% 40%, rgba(21, 101, 192, 0.16) 0%, transparent 28%),
+                radial-gradient(circle at 60% 90%, rgba(25, 118, 210, 0.14) 0%, transparent 26%),
+                /* Data encryption corridors */
+                linear-gradient(45deg, transparent 30%, rgba(24, 119, 242, 0.08) 45%, transparent 60%, rgba(13, 71, 161, 0.06) 80%, transparent 95%),
+                linear-gradient(-45deg, transparent 25%, rgba(33, 150, 243, 0.07) 50%, transparent 70%, rgba(25, 118, 210, 0.05) 85%, transparent 100%),
+                linear-gradient(120deg, transparent 40%, rgba(24, 119, 242, 0.04) 55%, transparent 70%),
+                /* Firewall protection zones */
+                conic-gradient(from 0deg at 20% 30%, transparent 0%, rgba(24, 119, 242, 0.1) 60%, transparent 120%),
+                conic-gradient(from 180deg at 80% 70%, transparent 0%, rgba(13, 71, 161, 0.08) 90%, transparent 180%);
+            z-index: 1;
+        }
+        
+        /* Network Lines Animation */
+        .network-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .network-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent 0%, rgba(24, 119, 242, 0.6) 50%, transparent 100%);
+            animation: dataFlow 4s linear infinite;
+        }
+        
+        .network-line:nth-child(1) {
+            top: 20%;
+            left: -100%;
+            width: 200%;
+            height: 2px;
+            animation-delay: 0s;
+        }
+        
+        .network-line:nth-child(2) {
+            top: 45%;
+            left: -100%;
+            width: 200%;
+            height: 1px;
+            animation-delay: 1s;
+            background: linear-gradient(90deg, transparent 0%, rgba(33, 150, 243, 0.4) 50%, transparent 100%);
+        }
+        
+        .network-line:nth-child(3) {
+            top: 70%;
+            left: -100%;
+            width: 200%;
+            height: 2px;
+            animation-delay: 2s;
+        }
+        
+        .network-line:nth-child(4) {
+            top: 30%;
+            left: 100%;
+            width: 200%;
+            height: 1px;
+            animation: dataFlowReverse 5s linear infinite;
+            animation-delay: 0.5s;
+            background: linear-gradient(90deg, transparent 0%, rgba(13, 71, 161, 0.5) 50%, transparent 100%);
+        }
+        
+        .network-line:nth-child(5) {
+            top: 60%;
+            left: 100%;
+            width: 200%;
+            height: 2px;
+            animation: dataFlowReverse 6s linear infinite;
+            animation-delay: 3s;
+        }
+        
+        /* Vertical Network Lines */
+        .network-line:nth-child(6) {
+            left: 15%;
+            top: -100%;
+            width: 1px;
+            height: 200%;
+            animation: dataFlowVertical 7s linear infinite;
+            animation-delay: 1.5s;
+            background: linear-gradient(180deg, transparent 0%, rgba(24, 119, 242, 0.3) 50%, transparent 100%);
+        }
+        
+        .network-line:nth-child(7) {
+            left: 85%;
+            top: -100%;
+            width: 2px;
+            height: 200%;
+            animation: dataFlowVertical 8s linear infinite;
+            animation-delay: 4s;
+        }
+        
+        /* Data Packet Transmission */
+        .data-packets {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 3;
+            pointer-events: none;
+        }
+        
+        .data-packet {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(76, 175, 80, 0.9);
+            border-radius: 2px;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+            animation: packetFlow 8s linear infinite;
+        }
+        
+        .data-packet:nth-child(1) {
+            top: 25%;
+            left: -20px;
+            animation-delay: 0s;
+        }
+        
+        .data-packet:nth-child(2) {
+            top: 50%;
+            left: -20px;
+            animation-delay: 2s;
+            background: rgba(33, 150, 243, 0.9);
+            box-shadow: 0 0 8px rgba(33, 150, 243, 0.5);
+        }
+        
+        .data-packet:nth-child(3) {
+            top: 75%;
+            left: -20px;
+            animation-delay: 4s;
+            background: rgba(255, 193, 7, 0.9);
+            box-shadow: 0 0 8px rgba(255, 193, 7, 0.5);
+        }
+        
+        .data-packet:nth-child(4) {
+            top: 35%;
+            right: -20px;
+            animation: packetFlowReverse 10s linear infinite;
+            animation-delay: 1s;
+            background: rgba(156, 39, 176, 0.9);
+            box-shadow: 0 0 8px rgba(156, 39, 176, 0.5);
+        }
+        
+        /* Encryption Zones */
+        .encryption-zones {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .encryption-zone {
+            position: absolute;
+            border: 1px solid rgba(24, 119, 242, 0.3);
+            border-radius: 8px;
+            background: rgba(24, 119, 242, 0.05);
+            animation: encryptionPulse 6s ease-in-out infinite;
+        }
+        
+        .encryption-zone:nth-child(1) {
+            top: 15%;
+            left: 10%;
+            width: 80px;
+            height: 60px;
+            animation-delay: 0s;
+        }
+        
+        .encryption-zone:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            width: 100px;
+            height: 70px;
+            animation-delay: 2s;
+            border-color: rgba(13, 71, 161, 0.3);
+            background: rgba(13, 71, 161, 0.05);
+        }
+        
+        .encryption-zone:nth-child(3) {
+            bottom: 20%;
+            left: 40%;
+            width: 90px;
+            height: 50px;
+            animation-delay: 4s;
+            border-color: rgba(33, 150, 243, 0.3);
+            background: rgba(33, 150, 243, 0.05);
+        }
+        
+        @keyframes packetFlow {
+            0% { 
+                transform: translateX(0) scale(1);
+                opacity: 0;
+            }
+            5% { opacity: 1; }
+            50% { 
+                transform: translateX(calc(100vw / 2)) scale(1.2);
+                opacity: 1;
+            }
+            95% { opacity: 1; }
+            100% { 
+                transform: translateX(100vw) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes packetFlowReverse {
+            0% { 
+                transform: translateX(0) scale(1);
+                opacity: 0;
+            }
+            5% { opacity: 1; }
+            50% { 
+                transform: translateX(calc(-100vw / 2)) scale(1.2);
+                opacity: 1;
+            }
+            95% { opacity: 1; }
+            100% { 
+                transform: translateX(-100vw) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes encryptionPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.3;
+                border-color: rgba(24, 119, 242, 0.3);
+            }
+            33% { 
+                transform: scale(1.1);
+                opacity: 0.6;
+                border-color: rgba(76, 175, 80, 0.4);
+            }
+            66% { 
+                transform: scale(1.05);
+                opacity: 0.5;
+                border-color: rgba(255, 193, 7, 0.4);
+            }
+        }
+        
+        /* Security Nodes */
+        .security-node {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: rgba(24, 119, 242, 0.8);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(24, 119, 242, 0.6);
+            animation: securityPulse 3s ease-in-out infinite;
+            z-index: 3;
+        }
+        
+        .security-node:nth-child(1) {
+            top: 25%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+        
+        .security-node:nth-child(2) {
+            top: 70%;
+            right: 25%;
+            animation-delay: 1s;
+        }
+        
+        .security-node:nth-child(3) {
+            bottom: 30%;
+            left: 50%;
+            animation-delay: 2s;
+        }
+        
+        /* Threat Detection Flash */
+        .threat-flash {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 82, 82, 0.8);
+            border-radius: 50%;
+            top: 50%;
+            left: 30%;
+            transform: translate(-50%, -50%);
+            animation: threatDetection 6s linear infinite;
+            z-index: 3;
+        }
+        
+        /* Shield Integration */
+        .shield-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(24, 119, 242, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: shieldPulse 4s ease-in-out infinite;
+            z-index: 2;
+        }
+        
+        @keyframes dataFlow {
+            0% { transform: translateX(-100%); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(100%); opacity: 0; }
+        }
+        
+        @keyframes dataFlowReverse {
+            0% { transform: translateX(100%); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(-100%); opacity: 0; }
+        }
+        
+        @keyframes dataFlowVertical {
+            0% { transform: translateY(-100%); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100%); opacity: 0; }
+        }
+        
+        @keyframes securityPulse {
+            0%, 100% { 
+                transform: scale(1); 
+                box-shadow: 0 0 20px rgba(24, 119, 242, 0.6);
+            }
+            50% { 
+                transform: scale(1.5); 
+                box-shadow: 0 0 30px rgba(24, 119, 242, 0.8);
+            }
+        }
+        
+        @keyframes threatDetection {
+            0%, 85% { 
+                background: rgba(255, 82, 82, 0.8);
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 15px rgba(255, 82, 82, 0.6);
+            }
+            90% { 
+                background: rgba(255, 193, 7, 0.8);
+                transform: translate(-50%, -50%) scale(1.2);
+                box-shadow: 0 0 25px rgba(255, 193, 7, 0.8);
+            }
+            95%, 100% { 
+                background: rgba(76, 175, 80, 0.8);
+                transform: translate(-50%, -50%) scale(0.8);
+                box-shadow: 0 0 20px rgba(76, 175, 80, 0.6);
+            }
+        }
+        
+        @keyframes shieldPulse {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.6;
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.8;
+            }
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--hero-overlay);
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            color: var(--white);
+            text-align: center;
+            padding: 4rem 2rem 3rem 2rem;
+        }
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+            color: #000000; /* Black color for light mode */
+        }
+        
+        /* Dark mode: Hero title in white */
+        .dark-mode .hero-title {
+            color: #fff;
+        }
+        .hero-desc {
+            font-size: 1.35rem;
+            margin-bottom: 2.5rem;
+            color: #eaf1fb;
+        }
+        .btn-cta {
+            background: var(--blue);
+            border: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 0.9rem 2.5rem;
+            border-radius: 2rem;
+            color: #fff;
+        }
+        .btn-cta:hover {
+            background: #1456a0;
+        }
+        .section-title {
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 2.5rem;
+            letter-spacing: -0.5px;
+        }
+        .feature-card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 2px 12px rgba(10,35,66,0.06);
+            background: var(--card-bg);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+        .feature-card .bi {
+            font-size: 2.5rem;
+            color: var(--blue);
+            margin-bottom: 1rem;
+        }
+        .carousel-item {
+            min-height: 220px;
+        }
+        .testimonial-card {
+            border: none;
+            border-radius: 1rem;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+            color: var(--white);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.25);
+        }
+        .testimonial-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .testimonial-card .bi {
+            color: rgba(255,255,255,0.9);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .testimonial-card p {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.95);
+        }
+        .testimonial-card small {
+            color: rgba(255,255,255,0.8) !important;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stats-section {
+            background: var(--gray);
+            padding: 3rem 0;
+        }
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem 0;
+            border-radius: 1rem;
+            background: var(--card-bg);
+            box-shadow: 0 2px 12px rgba(10,35,66,0.06);
+            color: var(--text-primary);
+        }
+        .stat-card h2 {
+            color: var(--blue);
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        html, body {
+            height: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: var(--white) !important;
+        }
+        .container {
+            flex: 1 0 auto;
+        }
+        .footer {
+            flex-shrink: 0;
+            margin-top: 0 !important;
+            padding-top: 2rem !important;
+            background: var(--footer-bg, #0a2342);
+            color: var(--footer-text, #fff);
+        }
+        .footer.mt-5 { margin-top: 0 !important; }
+        .footer.pt-4 { padding-top: 2rem !important; }
+        .navbar .nav-link {
+            color: var(--navy) !important;
+            font-weight: 500;
+            transition: color 0.2s, background 0.2s;
+        }
+        .navbar .nav-link:hover, .navbar .nav-link:focus {
+            color: var(--blue) !important;
+            background: rgba(24,119,242,0.08);
+            border-radius: 0.5rem;
+        }
+        .dark-mode .navbar .nav-link {
+            color: #fff !important;
+            font-weight: 600;
+        }
+        .dark-mode .navbar .nav-link:hover, .dark-mode .navbar .nav-link:focus {
+            color: #ffd600 !important;
+            background: rgba(255,255,255,0.08);
+            border-radius: 0.5rem;
+        }
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 50px;
+            height: 50px;
+            background: var(--blue);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        .carousel-control-prev {
+            left: -25px;
+        }
+        .carousel-control-next {
+            right: -25px;
+        }
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
+            opacity: 1;
+            background: var(--navy);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            width: 20px;
+            height: 20px;
+        }
+        
+        /* Dark mode adjustments for testimonials */
+        .dark-mode .testimonial-card {
+            background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+            box-shadow: 0 8px 32px rgba(33, 150, 243, 0.3);
+        }
+        .dark-mode .testimonial-card:hover {
+            box-shadow: 0 12px 40px rgba(33, 150, 243, 0.4);
+        }
+        
+        /* Dark Mode Adjustments for Animated Background */
+        .dark-mode .hero-section {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d47a1 50%, #1565c0 100%);
+        }
+        
+        .dark-mode .network-line:nth-child(1),
+        .dark-mode .network-line:nth-child(3),
+        .dark-mode .network-line:nth-child(5),
+        .dark-mode .network-line:nth-child(7) {
+            background: linear-gradient(90deg, transparent 0%, rgba(33, 150, 243, 0.8) 50%, transparent 100%);
+        }
+        
+        .dark-mode .security-node {
+            background: rgba(33, 150, 243, 0.9);
+            box-shadow: 0 0 25px rgba(33, 150, 243, 0.8);
+        }
+        
+        .dark-mode .shield-glow {
+            background: radial-gradient(circle, rgba(33, 150, 243, 0.3) 0%, transparent 70%);
+        }
+        
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+            .network-line,
+            .security-node,
+            .threat-flash,
+            .shield-glow {
+                animation: none;
+            }
+            
+            .security-node {
+                opacity: 0.6;
+            }
+            
+            .shield-glow {
+                opacity: 0.4;
+            }
+        }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .network-line {
+                height: 1px;
+            }
+            
+            .security-node {
+                width: 6px;
+                height: 6px;
+            }
+            
+            .threat-flash {
+                width: 15px;
+                height: 15px;
+            }
+            
+            .shield-glow {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="bi bi-shield-lock logo-icon"></i>ClickSafe
+            </a>
+            <button class="dark-toggle-btn" id="darkToggle" title="Toggle dark mode">
+                <i class="bi bi-moon" id="darkToggleIcon"></i>
+            </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#services" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Services</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#services">All Services</a></li>
+                            <li><a class="dropdown-item" href="#">URL Scanning</a></li>
+                            <li><a class="dropdown-item" href="#">File Analysis</a></li>
+                            <li><a class="dropdown-item" href="#">Real-Time Protection</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#about" id="aboutDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">About</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#about">Our Mission</a></li>
+                            <li><a class="dropdown-item" href="#">Team</a></li>
+                            <li><a class="dropdown-item" href="#">Careers</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="safe_browsing.html">Safe Browsing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="clickjacking_protection.html">Protection Scripts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-overlay"></div>
+        
+        <!-- Animated Network Background -->
+        <div class="network-lines">
+            <div class="network-line"></div>
+            <div class="network-line"></div>
+            <div class="network-line"></div>
+            <div class="network-line"></div>
+            <div class="network-line"></div>
+            <div class="network-line"></div>
+            <div class="network-line"></div>
+        </div>
+        
+        <!-- Data Packet Transmission -->
+        <div class="data-packets">
+            <div class="data-packet"></div>
+            <div class="data-packet"></div>
+            <div class="data-packet"></div>
+            <div class="data-packet"></div>
+        </div>
+        
+        <!-- Encryption Indicators -->
+        <div class="encryption-zones">
+            <div class="encryption-zone"></div>
+            <div class="encryption-zone"></div>
+            <div class="encryption-zone"></div>
+        </div>
+        
+        <!-- Security Nodes -->
+        <div class="security-node"></div>
+        <div class="security-node"></div>
+        <div class="security-node"></div>
+        
+        <!-- Threat Detection Animation -->
+        <div class="threat-flash"></div>
+        
+        <!-- Shield Glow Effect -->
+        <div class="shield-glow"></div>
+        
+        <div class="container hero-content">
+            <i class="bi bi-shield-lock logo-icon mb-3" style="font-size:4rem; position: relative; z-index: 10;"></i>
+            <h1 class="hero-title mb-3">Stay Safe. Scan Smart.</h1>
+            <p class="hero-desc">Your trusted partner for secure file and URL scanning. Stay safe online with our advanced, AI-powered detection system.</p>
+            <a href="login.html" class="btn btn-cta btn-lg px-4">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="container py-5" id="services">
+        <h2 class="section-title text-center">Our Services</h2>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <i class="bi bi-link-45deg"></i>
+                    <h5 class="fw-bold">URL Scanning</h5>
+                    <p>Detect phishing, malware, and harmful websites before you visit them.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <i class="bi bi-file-earmark-check"></i>
+                    <h5 class="fw-bold">File Analysis</h5>
+                    <p>Analyze files for viruses, trojans, and other malicious software.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <i class="bi bi-broadcast"></i>
+                    <h5 class="fw-bold">Real-Time Protection</h5>
+                    <p>Stay protected with continuous updates and alerts for emerging threats.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <i class="bi bi-ui-checks"></i>
+                    <h5 class="fw-bold">User-Friendly</h5>
+                    <p>Enjoy a clean, intuitive design that makes security accessible to everyone.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section (Carousel) -->
+    <section class="container py-5">
+        <h2 class="section-title text-center">What Our Users Say</h2>
+        <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="testimonial-card">
+                        <i class="bi bi-quote mb-2"></i>
+                        <p>"ClickSafe saved me from a phishing attack!"</p>
+                        <small class="text-muted">- John Doe</small>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="testimonial-card">
+                        <i class="bi bi-quote mb-2"></i>
+                        <p>"The AI-powered detection is incredibly accurate."</p>
+                        <small class="text-muted">- Jane Smith</small>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="testimonial-card">
+                        <i class="bi bi-quote mb-2"></i>
+                        <p>"I trust ClickSafe to keep my files safe."</p>
+                        <small class="text-muted">- Alex Johnson</small>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <h2>100+</h2>
+                        <p>Threats Detected Daily</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <h2>500+</h2>
+                        <p>Trusted by Users</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <h2>99%</h2>
+                        <p>Accuracy Rate</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer pt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-shield-lock logo-icon me-2"></i>
+                        <span class="fw-bold fs-5">ClickSafe</span>
+                    </div>
+                    <p class="mb-0">&copy; 2024 ClickSafe. All rights reserved.</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="footer-title">Quick Links</div>
+                    <a href="#services">Services</a> |
+                    <a href="#about">About</a> |
+                    <a href="safe_browsing.html">Safe Browsing</a> |
+                    <a href="login.html">Login</a>
+                </div>
+                <div class="col-md-4">
+                    <div class="footer-title">Contact Us</div>
+                    <div class="mb-2">support@clicksafe.com</div>
+                    <div class="social-icons">
+                        <a href="#" title="Email"><i class="bi bi-envelope"></i></a>
+                        <a href="#" title="Twitter"><i class="bi bi-twitter"></i></a>
+                        <a href="#" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+    <script>
+    // Dark mode toggle logic
+    function setDarkMode(enabled) {
+        if (enabled) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', '1');
+            document.getElementById('darkToggleIcon').className = 'bi bi-sun';
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('darkMode', '0');
+            document.getElementById('darkToggleIcon').className = 'bi bi-moon';
+        }
+    }
+    document.getElementById('darkToggle').onclick = function() {
+        setDarkMode(!document.body.classList.contains('dark-mode'));
+    };
+    // On load, set mode from localStorage
+    window.onload = function() {
+        if (localStorage.getItem('darkMode') === '1') {
+            setDarkMode(true);
+        } else {
+            setDarkMode(false);
+        }
+    };
+    </script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Scan Results - ClickSafe</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1877f2;
+            --navy: #2c3e50;
+            --light-blue: #e3f2fd;
+            --gray-light: #f8f9fa;
+            --text-primary: #2c3e50;
+            --text-secondary: #6c757d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--light-blue) 0%, #ffffff 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-container {
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 20px 40px rgba(24, 119, 242, 0.1);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .logo-section {
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            margin-right: 0.5rem;
+        }
+
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--navy);
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--light-blue);
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .loading-message {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .url-display {
+            background: var(--gray-light);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            word-break: break-all;
+            font-family: monospace;
+            color: var(--text-primary);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--primary-blue);
+            animation: pulse 1.4s ease-in-out infinite both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        .dot:nth-child(3) { animation-delay: 0; }
+
+        @keyframes pulse {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .error-container {
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 20px 40px rgba(220, 53, 69, 0.1);
+            max-width: 500px;
+            width: 90%;
+            border-left: 4px solid #dc3545;
+        }
+
+        .error-icon {
+            font-size: 3rem;
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .back-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #166fe5;
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetUrl = urlParams.get('url');
+        const guestId = urlParams.get('guest_id');
+        const userId = urlParams.get('user_id');
+
+        // Perform the scan when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            if (targetUrl) {
+                performScan(targetUrl);
+            } else {
+                showError('No URL provided for scanning');
+            }
+        });
+
+        function showLoadingScreen(url) {
+            document.body.innerHTML = `
+                <div class="loading-container">
+                    <div class="logo-section">
+                        <i class="bi bi-shield-lock logo-icon"></i>
+                        <span class="logo-text">ClickSafe</span>
+                    </div>
+                    <div class="loading-spinner"></div>
+                    <div class="loading-title">Scanning URL</div>
+                    <div class="loading-message">Analyzing security threats and vulnerabilities...</div>
+                    <div class="url-display">${url}</div>
+                    <div class="progress-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showError(message) {
+            document.body.innerHTML = `
+                <div class="error-container">
+                    <div class="logo-section">
+                        <i class="bi bi-shield-lock logo-icon"></i>
+                        <span class="logo-text">ClickSafe</span>
+                    </div>
+                    <i class="bi bi-exclamation-triangle error-icon"></i>
+                    <div class="error-title">Scan Failed</div>
+                    <div class="error-message">${message}</div>
+                    <a href="main_page.php" class="back-btn">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Scanner
+                    </a>
+                </div>
+            `;
+        }
+
+        async function performScan(url) {
+            try {
+                // Show beautiful loading screen
+                showLoadingScreen(url);
+
+                // Prepare form data
+                let formData = new FormData();
+                formData.append('url', url);
+                
+                if (guestId) {
+                    formData.append('guest_id', guestId);
+                }
+                if (userId) {
+                    formData.append('user_id', userId);
+                }
+
+                // Make request to backend
+                let response = await fetch('http://127.0.0.1:5001/scan', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                }
+
+                // Get the HTML response and replace entire document with it
+                const htmlResult = await response.text();
+                document.open();
+                document.write(htmlResult);
+                document.close();
+
+            } catch (error) {
+                console.error('Scan error:', error);
+                showError('Error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

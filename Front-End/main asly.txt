@@ -1,0 +1,153 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: login.html");
+    exit();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickSafe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(145deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+        }
+        @keyframes gradient {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 350px;
+        }
+        .logo {
+            width: 150px;
+            margin-bottom: 15px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: #2c2c2c;
+            color: white;
+        }
+        .button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .attach-button {
+            background-color: #2196F3;
+        }
+        .attach-button:hover {
+            background-color: #1E88E5;
+        }
+        .scan-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .scan-button:hover {
+            background-color: #45a049;
+        }
+        .logout-button {
+            background-color: #f44336;
+            color: white;
+            margin-top: 10px;
+        }
+        .logout-button:hover {
+            background-color: #e53935;
+        }
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+    <script>
+        function showFileName(event) {
+            const fileInput = event.target;
+            if (fileInput.files.length > 0) {
+                document.getElementById('fileName').textContent = `Attached File: ${fileInput.files[0].name}`;
+            } else {
+                document.getElementById('fileName').textContent = '';
+            }
+        }
+
+        async function scanInput() {
+            const inputField = document.getElementById("textInput").value;
+            const fileInput = document.getElementById("fileInput").files[0];
+
+            let scanType = "URL";
+            let scanValue = inputField;
+
+            if (fileInput) {
+                scanType = "File";
+                scanValue = fileInput.name;
+            }
+
+            const formData = new FormData();
+            formData.append("file", fileInput);
+            
+            let res = await fetch("http://127.0.0.1:5000/scan", {
+                method: "POST",
+                body: formData
+            });
+            let resTxt = await res.text();
+            console.log(resTxt);
+
+            localStorage.setItem("result", resTxt);
+            const resultPageUrl = `scan_results.html?type=${encodeURIComponent(scanType)}&value=${encodeURIComponent(scanValue)}`;
+            window.location.href = resultPageUrl;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <img src="logo.jpeg" alt="ClickSafe Logo" class="logo">
+        <h1>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
+        
+        <input type="text" id="textInput" placeholder="Enter URL or text here..." />
+        
+        <label for="fileInput" class="button attach-button">Attach File</label>
+        <input type="file" id="fileInput" onchange="showFileName(event)" />
+        <p id="fileName"></p>
+        
+        <button onclick="scanInput()" class="button scan-button">Scan</button>
+        
+        <form action="logout.php" method="POST">
+            <button type="submit" class="button logout-button">Logout</button>
+        </form>
+    </div>
+</body>
+</html>

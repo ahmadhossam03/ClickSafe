@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickSafe - Clickjacking Protection Scripts</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/icons/shield-lock.svg">
+    <!-- Roboto font for clean look -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0a2342;
+            --blue: #1877f2;
+            --white: #fff;
+            --gray: #f8f9fa;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+            --text-primary: #0a2342;
+            --text-secondary: #3a4a5d;
+            --card-bg: #fff;
+            --footer-bg: #0a2342;
+            --footer-text: #fff;
+            --hero-overlay: rgba(10,35,66,0.65);
+        }
+        body.dark-mode, .dark-mode {
+            --navy: #e0e0e0;
+            --blue: #2196f3;
+            --white: #121212;
+            --gray: #1e1e1e;
+            --shadow: none;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --card-bg: #1e1e1e;
+            --footer-bg: #181818;
+            --footer-text: #e0e0e0;
+            --hero-overlay: rgba(18,18,18,0.82);
+        }
+        html, body {
+            height: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: var(--white) !important;
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-primary);
+        }
+        .container {
+            flex: 1 0 auto;
+        }
+        .footer {
+            flex-shrink: 0;
+            margin-top: 0 !important;
+            padding-top: 2rem !important;
+            background: var(--footer-bg, #0a2342);
+            color: var(--footer-text, #fff);
+        }
+        .navbar .nav-link {
+            color: var(--navy) !important;
+            font-weight: 500;
+            transition: color 0.2s, background 0.2s;
+        }
+        .navbar .nav-link:hover, .navbar .nav-link:focus {
+            color: var(--blue) !important;
+            background: rgba(24,119,242,0.08);
+            border-radius: 0.5rem;
+        }
+        .dark-mode .navbar .nav-link {
+            color: #fff !important;
+            font-weight: 600;
+        }
+        .dark-mode .navbar .nav-link:hover, .dark-mode .navbar .nav-link:focus {
+            color: #ffd600 !important;
+            background: rgba(255,255,255,0.08);
+            border-radius: 0.5rem;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--navy) !important;
+            text-decoration: none;
+        }
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--blue);
+            margin-right: 0.5rem;
+        }
+        .dark-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--navy);
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+        }
+        .dark-toggle-btn:hover {
+            background: rgba(24,119,242,0.1);
+            color: var(--blue);
+        }
+        .dark-mode .dark-toggle-btn {
+            color: #fff;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+            color: var(--white);
+            padding: 4rem 0 3rem 0;
+            text-align: center;
+        }
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .hero-desc {
+            font-size: 1.2rem;
+            margin-bottom: 0;
+            opacity: 0.9;
+        }
+        .section-title {
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+        .dark-mode .section-title {
+            color: var(--text-primary);
+        }
+        .protection-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .protection-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.15);
+        }
+        .dark-mode .protection-card {
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .protection-card h4 {
+            color: var(--navy);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        .dark-mode .protection-card h4 {
+            color: var(--text-primary);
+        }
+        .protection-card i {
+            font-size: 1.5rem;
+            color: var(--blue);
+            margin-right: 0.75rem;
+        }
+        .code-container {
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #e9ecef;
+            position: relative;
+        }
+        .dark-mode .code-container {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .copy-btn:hover {
+            background: #1456a0;
+        }
+        .copy-btn.copied {
+            background: #28a745;
+        }
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .alert-info {
+            background: rgba(24,119,242,0.1);
+            border-color: var(--blue);
+            color: var(--navy);
+        }
+        .dark-mode .alert-info {
+            background: rgba(33,150,243,0.2);
+            border-color: var(--blue);
+            color: var(--text-primary);
+        }
+        .btn-primary {
+            background: var(--blue);
+            border-color: var(--blue);
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+        }
+        .btn-primary:hover {
+            background: #1456a0;
+            border-color: #1456a0;
+        }
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+        .breadcrumb-item a {
+            color: var(--blue);
+            text-decoration: none;
+        }
+        .breadcrumb-item.active {
+            color: var(--text-secondary);
+        }
+        .implementation-guide {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .dark-mode .implementation-guide {
+            background: linear-gradient(135deg, #1a237e 0%, #4a148c 100%);
+        }
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            background: var(--blue);
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            margin-right: 1rem;
+        }
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            .hero-desc {
+                font-size: 1rem;
+            }
+            .protection-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <i class="bi bi-shield-lock logo-icon"></i>ClickSafe
+            </a>
+            <button class="dark-toggle-btn" id="darkToggle" title="Toggle dark mode">
+                <i class="bi bi-moon" id="darkToggleIcon"></i>
+            </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="index.html#services" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Services</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="index.html#services">All Services</a></li>
+                            <li><a class="dropdown-item" href="#">URL Scanning</a></li>
+                            <li><a class="dropdown-item" href="#">File Analysis</a></li>
+                            <li><a class="dropdown-item" href="#">Real-Time Protection</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="index.html#about" id="aboutDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">About</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="index.html#about">Our Mission</a></li>
+                            <li><a class="dropdown-item" href="#">Team</a></li>
+                            <li><a class="dropdown-item" href="#">Careers</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="safe_browsing.html">Safe Browsing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="clickjacking_protection.html">Protection Scripts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <i class="bi bi-code-slash mb-3" style="font-size:3rem;"></i>
+            <h1 class="hero-title">Clickjacking Protection Scripts</h1>
+            <p class="hero-desc">Secure your website with our comprehensive clickjacking protection scripts. Easy to implement and highly effective.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Protection Scripts</li>
+            </ol>
+        </nav>
+
+        <!-- Introduction -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="alert alert-info d-flex align-items-center" role="alert">
+                    <i class="bi bi-info-circle-fill me-3" style="font-size: 1.5rem;"></i>
+                    <div>
+                        <strong>What is Clickjacking?</strong><br>
+                        Clickjacking is a malicious technique where attackers trick users into clicking on something different from what they perceive, potentially leading to unauthorized actions or data theft.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Guide -->
+        <div class="implementation-guide">
+            <h3 class="mb-4"><i class="bi bi-gear-fill me-2"></i>Implementation Guide</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-start mb-3">
+                        <span class="step-number">1</span>
+                        <div>
+                            <strong>Choose Your Script</strong><br>
+                            <small class="text-muted">Select the appropriate protection script based on your needs</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-start mb-3">
+                        <span class="step-number">2</span>
+                        <div>
+                            <strong>Copy the Code</strong><br>
+                            <small class="text-muted">Use the copy button to get the script code</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-start mb-3">
+                        <span class="step-number">3</span>
+                        <div>
+                            <strong>Add to Your Website</strong><br>
+                            <small class="text-muted">Paste the code in your HTML head section or php </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-start">
+                        <span class="step-number">4</span>
+                        <div>
+                            <strong>Test & Verify</strong><br>
+                            <small class="text-muted">Ensure the protection is working correctly</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Protection Scripts Section -->
+        <div class="row">
+            <div class="col-12">
+                <h2 class="section-title text-center mb-5">Protection Scripts</h2>
+            </div>
+        </div>
+
+        <!-- Script Cards Container -->
+        <div id="scriptsContainer">
+            <!-- Scripts will be inserted here -->
+            <div class="protection-card">
+                <h4><i class="bi bi-shield-check"></i>Basic Frame-Busting Script</h4>
+                <p class="text-muted mb-3">A simple JavaScript solution that prevents your page from being loaded in an iframe.</p>
+                <div class="code-container">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-javascript">// Basic frame-busting script
+if (top !== self) {
+    top.location = self.location;
+}</code></pre>
+                </div>
+                <div class="mt-3">
+                    <strong>Usage:</strong> Add this script to the &lt;head&gt; section of your HTML page.
+                </div>
+            </div>
+
+            <div class="protection-card">
+                <h4><i class="bi bi-shield-plus"></i>Advanced Frame Protection</h4>
+                <p class="text-muted mb-3">Enhanced protection with additional security measures and error handling.</p>
+                <div class="code-container">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-javascript">// Advanced frame protection
+(function() {
+    'use strict';
+    
+    // Check if page is in a frame
+    if (window.top !== window.self) {
+        // Try to break out of frame
+        try {
+            if (window.top.location.hostname !== window.self.location.hostname) {
+                window.top.location = window.self.location;
+            }
+        } catch (e) {
+            // If access is denied, hide the page content
+            document.body.style.display = 'none';
+            alert('This page cannot be displayed in a frame for security reasons.');
+        }
+    }
+})();</code></pre>
+                </div>
+                <div class="mt-3">
+                    <strong>Usage:</strong> Place this script in the &lt;head&gt; section for maximum protection.
+                </div>
+            </div>
+
+            <div class="protection-card">
+                <h4><i class="bi bi-code-square"></i>X-Frame-Options Header</h4>
+                <p class="text-muted mb-3">Server-side protection using HTTP headers (recommended approach).</p>
+                <div class="code-container">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-html">&lt;!-- Add this meta tag to your HTML head --&gt;
+&lt;meta http-equiv="X-Frame-Options" content="DENY"&gt;
+
+&lt;!-- Or use SAMEORIGIN to allow framing from same domain --&gt;
+&lt;meta http-equiv="X-Frame-Options" content="SAMEORIGIN"&gt;</code></pre>
+                </div>
+                <div class="mt-3">
+                    <strong>Usage:</strong> Add the meta tag to your HTML head section, or configure your web server to send the X-Frame-Options header.
+                </div>
+            </div>
+
+            <div class="protection-card">
+                <h4><i class="bi bi-lock"></i>Content Security Policy (CSP)</h4>
+                <p class="text-muted mb-3">Modern approach using Content Security Policy for frame protection.</p>
+                <div class="code-container">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-html">&lt;!-- CSP meta tag for frame protection --&gt;
+&lt;meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';"&gt;
+
+&lt;!-- Or allow same origin --&gt;
+&lt;meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self';"&gt;</code></pre>
+                </div>
+                <div class="mt-3">
+                    <strong>Usage:</strong> Add to your HTML head section. This is the most modern and flexible approach.
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <h5><i class="bi bi-lightbulb me-2"></i>Best Practices</h5>
+                    <ul class="mb-0">
+                        <li>Use server-side headers (X-Frame-Options or CSP) when possible</li>
+                        <li>Combine multiple protection methods for enhanced security</li>
+                        <li>Test your implementation across different browsers</li>
+                        <li>Consider legitimate use cases where framing might be needed</li>
+                        <li>Regularly update your protection scripts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center mt-5">
+            <h3 class="mb-3">Need Help Implementing These Scripts?</h3>
+            <p class="text-muted mb-4">Our team can help you implement these protection measures on your website.</p>
+            <a href="login.html" class="btn btn-primary btn-lg">Get Professional Help</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-5 pt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="mb-3">
+                        <i class="bi bi-shield-lock me-2"></i>ClickSafe
+                    </h5>
+                    <p class="mb-3">Your trusted partner for online security. Protecting users from malicious content with advanced AI-powered detection.</p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="mb-3">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-decoration-none">Home</a></li>
+                        <li><a href="safe_browsing.html" class="text-decoration-none">Safe Browsing</a></li>
+                        <li><a href="clickjacking_protection.html" class="text-decoration-none">Protection Scripts</a></li>
+                        <li><a href="login.html" class="text-decoration-none">Login</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="mb-3">Contact</h6>
+                    <p class="mb-1">Email: support@clicksafe.com</p>
+                    <p class="mb-1">Phone: +1 (555) 123-4567</p>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2025 ClickSafe. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <small class="text-muted">Powered by Advanced AI Detection</small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <script>
+        // Dark mode toggle
+        const darkToggle = document.getElementById('darkToggle');
+        const darkToggleIcon = document.getElementById('darkToggleIcon');
+        const body = document.body;
+
+        // Check for saved dark mode preference
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+        if (isDarkMode) {
+            body.classList.add('dark-mode');
+            darkToggleIcon.classList.replace('bi-moon', 'bi-sun');
+        }
+
+        darkToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isNowDark = body.classList.contains('dark-mode');
+            
+            // Update icon
+            if (isNowDark) {
+                darkToggleIcon.classList.replace('bi-moon', 'bi-sun');
+            } else {
+                darkToggleIcon.classList.replace('bi-sun', 'bi-moon');
+            }
+            
+            // Save preference
+            localStorage.setItem('darkMode', isNowDark);
+        });
+
+        // Copy code functionality
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling.querySelector('code');
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                // Show success feedback
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

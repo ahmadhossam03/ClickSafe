@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Browsing Awareness - ClickSafe</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/icons/shield-lock.svg">
+    <!-- Roboto font for clean look -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0a2342;
+            --blue: #1877f2;
+            --white: #fff;
+            --gray: #f8f9fa;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+            --text-primary: #0a2342;
+            --text-secondary: #3a4a5d;
+            --card-bg: #fff;
+            --footer-bg: #0a2342;
+            --footer-text: #fff;
+            --hero-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --hero-overlay: rgba(10,35,66,0.15);
+            --accent-color: #ff6b6b;
+            --success-color: #51cf66;
+            --warning-color: #ffd43b;
+        }
+        body.dark-mode, .dark-mode {
+            --navy: #e0e0e0;
+            --blue: #2196f3;
+            --white: #121212;
+            --gray: #1e1e1e;
+            --shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.05);
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --card-bg: #1e1e1e;
+            --footer-bg: #181818;
+            --footer-text: #e0e0e0;
+            --hero-bg: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            --hero-overlay: rgba(255,255,255,0.1);
+        }
+        html, body {
+            height: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            scroll-behavior: smooth;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: var(--white);
+            color: var(--text-primary);
+        }
+        .container {
+            flex: 1 0 auto;
+        }
+        .navbar {
+            background: var(--white) !important;
+            box-shadow: 0 2px 20px rgba(10,35,66,0.08);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .navbar.scrolled {
+            box-shadow: 0 4px 30px rgba(10,35,66,0.15);
+        }
+        .navbar-brand {
+            color: var(--navy) !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+        .navbar-brand:hover {
+            transform: scale(1.05);
+        }
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--blue);
+            margin-right: 0.5rem;
+        }
+        .nav-link {
+            color: var(--navy) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.2rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(24, 119, 242, 0.1);
+            color: var(--blue) !important;
+            transform: translateY(-2px);
+        }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: var(--blue);
+            border-radius: 2px;
+        }
+        .navbar-toggler {
+            border: none;
+            padding: 0.25rem 0.5rem;
+        }
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+        .dark-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--navy);
+            font-size: 1.5rem;
+            margin-left: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            padding: 0.5rem;
+        }
+        .dark-toggle-btn:hover {
+            background: rgba(24, 119, 242, 0.1);
+            transform: rotate(180deg);
+        }
+        .dark-mode .dark-toggle-btn {
+            color: #ffd600;
+        }
+        .profile-dropdown .dropdown-toggle {
+            background: none;
+            border: none;
+            color: var(--navy);
+            font-size: 1.3rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+        }
+        .profile-dropdown .dropdown-toggle:hover {
+            background: rgba(24, 119, 242, 0.1);
+            transform: scale(1.05);
+        }
+        .profile-dropdown .dropdown-menu {
+            min-width: 8rem;
+            border: none;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border-radius: 0.75rem;
+        }
+        .hero-section {
+            padding: 6rem 0 4rem 0;
+            background: var(--hero-bg);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--hero-overlay);
+            z-index: 1;
+        }
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+            z-index: 1;
+            animation: floatComplex 15s ease-in-out infinite;
+        }
+        @keyframes floatComplex {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg); 
+                opacity: 0.8;
+            }
+            33% { 
+                transform: translateY(-15px) rotate(1deg); 
+                opacity: 1;
+            }
+            66% { 
+                transform: translateY(-25px) rotate(-1deg); 
+                opacity: 0.9;
+            }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .hero-section > .container {
+            position: relative;
+            z-index: 2;
+        }
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+        .hero-desc {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+        .hero-icon {
+            font-size: 4rem;
+            color: white;
+            margin-bottom: 2rem;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: pulse 2s ease-in-out infinite, float 3s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+        .btn-hero {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        .btn-hero:hover::before {
+            left: 100%;
+        }
+        .btn-primary-hero {
+            background: white;
+            color: var(--blue);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .btn-primary-hero:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 30px rgba(0,0,0,0.3);
+            color: var(--blue);
+        }
+        .btn-outline-hero {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        .btn-outline-hero:hover {
+            background: white;
+            color: var(--blue);
+            transform: translateY(-3px);
+        }
+        .card {
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 25px rgba(10,35,66,0.08);
+            border: none;
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
+            background-size: 300% 300%;
+            animation: gradientShift 6s ease infinite;
+            transition: all 0.4s ease;
+        }
+        .card::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
+            background-size: 300% 300%;
+            border-radius: 1.6rem;
+            z-index: -1;
+            opacity: 0;
+            animation: gradientShift 6s ease infinite;
+            transition: all 0.4s ease;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(10,35,66,0.2);
+        }
+        .card:hover::before {
+            height: 8px;
+        }
+        .card:hover::after {
+            opacity: 1;
+        }
+        .card .bi {
+            font-size: 3rem;
+            color: var(--blue);
+            margin-bottom: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease infinite;
+        }
+        .card:hover .bi {
+            transform: scale(1.2) rotate(12deg);
+            animation-duration: 2s;
+        }
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        .list-group-item {
+            background: linear-gradient(135deg, #eaf1fb 0%, #f0f7ff 100%);
+            border: none;
+            color: var(--navy);
+            border-radius: 0.75rem !important;
+            margin-bottom: 0.75rem;
+            padding: 1rem 1.25rem;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .list-group-item::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: all 0.4s ease;
+        }
+        .list-group-item::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        .list-group-item:hover {
+            transform: translateX(12px) scale(1.02);
+            background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+        .list-group-item:hover::before {
+            width: 8px;
+            background: linear-gradient(45deg, #f093fb, #f5576c, #4facfe);
+        }
+        .list-group-item:hover::after {
+            left: 100%;
+        }
+        body.dark-mode .list-group-item, .dark-mode .list-group-item {
+            background: linear-gradient(135deg, #23272b 0%, #2c3034 100%);
+            color: #e0e0e0;
+        }
+        body.dark-mode .list-group-item:hover, .dark-mode .list-group-item:hover {
+            background: linear-gradient(135deg, #2a2f35 0%, #353a40 100%);
+        }
+        .list-group-item strong {
+            color: var(--blue);
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--blue) 0%, #1456a0 100%);
+            border: none;
+            font-weight: 600;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(24, 119, 242, 0.3);
+        }
+        .footer {
+            flex-shrink: 0;
+            margin-top: 0 !important;
+            padding-top: 3rem !important;
+            background: var(--footer-bg, #0a2342);
+            color: var(--footer-text, #fff);
+            position: relative;
+        }
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--blue), var(--accent-color), var(--success-color));
+        }
+        .footer a {
+            color: var(--blue);
+            text-decoration: none;
+            margin-right: 1rem;
+            transition: all 0.3s ease;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+        .footer a:hover {
+            color: white;
+            background: var(--blue);
+            transform: translateY(-2px);
+        }
+        .footer .bi {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .footer .bi:hover {
+            transform: scale(1.2) rotate(10deg);
+        }
+        .section-spacing {
+            padding: 4rem 0;
+        }
+        /* Navigation breadcrumb */
+        .breadcrumb-nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        .breadcrumb {
+            background: none;
+            padding: 0;
+            margin: 0;
+        }
+        .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .breadcrumb-item a:hover {
+            color: white;
+        }
+        .breadcrumb-item.active {
+            color: white;
+            font-weight: 600;
+        }
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            .hero-desc {
+                font-size: 1.1rem;
+            }
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn-hero {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-shield-lock logo-icon"></i>ClickSafe
+            </a>
+            
+            <!-- Navigation Links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="main_page.php">
+                            <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="scan_results.html">
+                            <i class="bi bi-search me-1"></i>Scanner
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="safe_browsing.html">
+                            <i class="bi bi-shield-check me-1"></i>Safety Guide
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Mobile Toggle Button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Dark Mode Toggle and Profile -->
+            <div class="d-flex align-items-center">
+                <button class="dark-toggle-btn me-2" id="darkToggle" title="Toggle dark mode">
+                    <i class="bi bi-moon" id="darkToggleIcon"></i>
+                </button>
+                <div class="profile-dropdown dropdown">
+                    <button class="dropdown-toggle d-flex align-items-center" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle me-2" style="font-size:1.7rem;"></i>
+                        <span class="d-none d-md-inline">User</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="main_page.php"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                        <li><a class="dropdown-item" href="history.html"><i class="bi bi-clock-history me-2"></i>History</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="login.html"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <!-- Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb" class="breadcrumb-nav mb-4">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item">
+                        <a href="index.html">
+                            <i class="bi bi-house-door me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="main_page.php">
+                            <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="bi bi-shield-lock me-1"></i>Safe Browsing
+                    </li>
+                </ol>
+            </nav>
+            <i class="bi bi-shield-lock hero-icon"></i>
+            <h1 class="hero-title">Safe Browsing Awareness</h1>
+            <p class="hero-desc">Master the art of secure web navigation with our comprehensive safety guidelines and expert tips.</p>
+            <div class="cta-buttons">
+                <a href="#tips" class="btn-hero btn-primary-hero">
+                    <i class="bi bi-lightbulb me-2"></i>Learn Safety Tips
+                </a>
+                <a href="scan_results.html" class="btn-hero btn-outline-hero">
+                    <i class="bi bi-search me-2"></i>Scan a Website
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- Main Content -->
+    <section id="tips" class="container py-5 section-spacing">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="display-5 fw-bold mb-3" style="color: var(--text-primary);">
+                    <i class="bi bi-shield-check me-3" style="color: var(--blue);"></i>
+                    Essential Safety Guidelines
+                </h2>
+                <p class="lead" style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+                    Protect yourself from online threats with these comprehensive security practices and awareness tips.
+                </p>
+            </div>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-4">
+                <div class="card p-3 h-100">
+                    <div class="text-center">
+                        <i class="bi bi-shield-exclamation"></i>
+                        <h5 class="fw-bold mt-2">How to Avoid Clickbait?</h5>
+                    </div>
+                    <ul class="list-group list-group-flush mt-3">
+                        <li class="list-group-item"><strong>Verify the source:</strong> Check if the website is legitimate before clicking.</li>
+                        <li class="list-group-item"><strong>Look for exaggerated headlines:</strong> If it sounds too shocking to be true, it probably is.</li>
+                        <li class="list-group-item"><strong>Use browser extensions:</strong> Tools like ClickSafe can detect misleading links.</li>
+                        <li class="list-group-item"><strong>Authenticate the source:</strong> Phishing attacks are often carried out by mirroring popular websites.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card p-3 h-100">
+                    <div class="text-center">
+                        <i class="bi bi-shield-lock"></i>
+                        <h5 class="fw-bold mt-2">Protect Yourself from Clickjacking</h5>
+                    </div>
+                    <ul class="list-group list-group-flush mt-3">
+                        <li class="list-group-item"><strong>Do not use piracy websites:</strong> These sites often contain malicious scripts.</li>
+                        <li class="list-group-item"><strong>Use an AD-Blocker:</strong> This prevents malicious ads from executing harmful actions.</li>
+                        <li class="list-group-item"><strong>Verify the authenticity:</strong> Always ensure that the link or button you're clicking is legitimate.</li>
+                        <li class="list-group-item"><strong>Hover over links:</strong> This reveals the actual URL and helps identify suspicious destinations.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card p-3 h-100">
+                    <div class="text-center">
+                        <i class="bi bi-download"></i>
+                        <h5 class="fw-bold mt-2">Safe Downloading Practices</h5>
+                    </div>
+                    <ul class="list-group list-group-flush mt-3">
+                        <li class="list-group-item"><strong>Avoid cracked software:</strong> Downloading cracked versions is unethical and often contains malware.</li>
+                        <li class="list-group-item"><strong>Stick to trusted sources:</strong> Only download files from reputable websites.</li>
+                        <li class="list-group-item"><strong>Scan downloads:</strong> Use antivirus tools to scan downloaded files for potential threats.</li>
+                        <li class="list-group-item"><strong>Check file extensions:</strong> Be cautious of executable files and verify their authenticity.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-5">
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="main_page.php" class="btn btn-primary">
+                    <i class="bi bi-speedometer2 me-2"></i>Go to Dashboard
+                </a>
+                <a href="scan_results.html" class="btn btn-outline-primary">
+                    <i class="bi bi-search me-2"></i>Scan a Website
+                </a>
+                <a href="index.html" class="btn btn-outline-secondary">
+                    <i class="bi bi-house-door me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer class="footer pt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-shield-lock logo-icon me-2"></i>
+                        <span class="fw-bold fs-5">ClickSafe</span>
+                    </div>
+                    <p class="mb-0">&copy; 2024 ClickSafe. All rights reserved.</p>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0 text-center">
+                    <div class="mb-2">Quick Links</div>
+                    <a href="index.html#services">Services</a> |
+                    <a href="index.html#about">About</a> |
+                    <a href="safe_browsing.html">Safe Browsing</a> |
+                    <a href="login.html">Login</a>
+                </div>
+                <div class="col-md-4 text-md-end text-center">
+                    <div class="mb-2">Contact Us</div>
+                    <a href="#" title="Email"><i class="bi bi-envelope"></i></a>
+                    <a href="#" title="Twitter"><i class="bi bi-twitter"></i></a>
+                    <a href="#" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+    <script>
+    // Dark mode toggle logic
+    function setDarkMode(enabled) {
+        if (enabled) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', '1');
+            document.getElementById('darkToggleIcon').className = 'bi bi-sun';
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('darkMode', '0');
+            document.getElementById('darkToggleIcon').className = 'bi bi-moon';
+        }
+    }
+    
+    document.getElementById('darkToggle').onclick = function() {
+        setDarkMode(!document.body.classList.contains('dark-mode'));
+    };
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Add scroll effect to navbar
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+    
+    // Card interaction effects
+    document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            // Add slight tilt effect on hover
+            this.style.transform = 'translateY(-15px) scale(1.02) rotateX(5deg)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+        });
+    });
+    
+    // List item click effects
+    document.querySelectorAll('.list-group-item').forEach(item => {
+        item.addEventListener('click', function() {
+            // Add temporary highlight effect
+            this.style.background = 'linear-gradient(135deg, #c3dafe 0%, #bfdbfe 100%)';
+            setTimeout(() => {
+                this.style.background = '';
+            }, 300);
+        });
+    });
+    
+    // On load, set mode from localStorage and initialize animations
+    window.onload = function() {
+        if (localStorage.getItem('darkMode') === '1') {
+            setDarkMode(true);
+        } else {
+            setDarkMode(false);
+        }
+        
+        // Add fade-in animation to cards
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = `opacity 0.6s ease ${index * 0.2}s, transform 0.6s ease ${index * 0.2}s`;
+            observer.observe(card);
+        });
+    };
+    </script>
+</body>
+</html>

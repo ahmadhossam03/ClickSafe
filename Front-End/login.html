@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ClickSafe</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/icons/shield-lock.svg">
+    <!-- Roboto font for clean look -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0a2342;
+            --blue: #1877f2;
+            --white: #fff;
+            --gray: #f8f9fa;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+            --text-primary: #0a2342;
+            --text-secondary: #3a4a5d;
+            --card-bg: #fff;
+            --footer-bg: #0a2342;
+            --footer-text: #fff;
+        }
+        body.dark-mode, .dark-mode {
+            --navy: #e0e0e0;
+            --blue: #2196f3;
+            --white: #121212;
+            --gray: #1e1e1e;
+            --shadow: none;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --card-bg: #1e1e1e;
+            --footer-bg: #181818;
+            --footer-text: #e0e0e0;
+        }
+        html, body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: var(--white);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        .navbar {
+            background: var(--white) !important;
+            box-shadow: 0 2px 8px rgba(10,35,66,0.04);
+            padding-top: 0.7rem;
+            padding-bottom: 0.7rem;
+        }
+        .navbar-brand {
+            color: var(--navy) !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+        }
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--blue);
+            margin-right: 0.5rem;
+        }
+        .dark-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--navy);
+            font-size: 1.5rem;
+            margin-left: 1rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .dark-mode .dark-toggle-btn {
+            color: #ffd600;
+        }
+        .profile-dropdown .dropdown-toggle {
+            background: none;
+            border: none;
+            color: var(--navy);
+            font-size: 1.3rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        .profile-dropdown .dropdown-menu {
+            min-width: 8rem;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 4rem auto;
+        }
+        .card {
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            border: none;
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+        .form-control:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 0.2rem rgba(24,119,242,0.15);
+        }
+        .btn-primary {
+            background: var(--blue);
+            border: none;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: #1456a0;
+        }
+        .back-link, .forgot-link {
+            color: var(--blue);
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        .back-link:hover, .forgot-link:hover {
+            color: var(--navy);
+        }
+        .show-password {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-shield-lock logo-icon"></i>ClickSafe
+            </a>
+            <button class="dark-toggle-btn" id="darkToggle" title="Toggle dark mode">
+                <i class="bi bi-moon" id="darkToggleIcon"></i>
+            </button>
+            <div class="ms-auto profile-dropdown dropdown">
+                <button class="dropdown-toggle d-flex align-items-center" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle me-2" style="font-size:1.7rem;"></i>
+                    <span class="d-none d-md-inline">User</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                    <li><a class="dropdown-item text-danger" href="login.php"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="login-container">
+        <div class="card p-4">
+            <div class="text-center mb-4">
+                <i class="bi bi-shield-lock logo-icon" style="font-size:2.5rem;"></i>
+                <h3 class="fw-bold mt-2">Sign in to ClickSafe</h3>
+            </div>
+            <form action="login.php" method="POST" autocomplete="off">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control border-start-0" id="username" name="username" placeholder="Enter your username" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control border-start-0" id="password" name="password" placeholder="Enter your password" required>
+                        <span class="input-group-text bg-white show-password" onclick="togglePassword()" title="Show/Hide Password"><i class="bi bi-eye" id="toggleIcon"></i></span>
+                    </div>
+                </div>
+                <div id="loginError" class="mb-2" style="display:none;"></div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                        <label class="form-check-label" for="remember">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mb-2">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                </button>
+                <button type="button" class="btn btn-outline-secondary w-100 mb-2" onclick="guestLogin()">
+                    <i class="bi bi-person me-2"></i>Continue as Guest
+                </button>
+            </form>
+            <div class="text-center mt-3">
+                <span class="text-muted">Don't have an account?</span>
+                <a href="create_account.html" class="back-link ms-1">Create Account</a>
+            </div>
+            <div class="text-center mt-2">
+                <a href="index.html" class="back-link"><i class="bi bi-arrow-left me-1"></i>Back to Home</a>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+    <script>
+        function togglePassword() {
+            const pwd = document.getElementById('password');
+            const icon = document.getElementById('toggleIcon');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                pwd.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        }
+
+        function guestLogin() {
+            // Create guest session directly with PHP
+            const guest_id = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            // Create a form and submit it to guest_login.php
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'guest_login.php';
+            
+            const guestIdInput = document.createElement('input');
+            guestIdInput.type = 'hidden';
+            guestIdInput.name = 'guest_id';
+            guestIdInput.value = guest_id;
+            
+            form.appendChild(guestIdInput);
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        // Check for existing guest session on page load
+        function checkExistingGuestSession() {
+            const guestSession = localStorage.getItem('clicksafe_guest_session');
+            const sessionActive = localStorage.getItem('clicksafe_session_active');
+            
+            if (guestSession && sessionActive === 'true') {
+                const guestData = JSON.parse(guestSession);
+                const timeSinceActivity = Math.floor(Date.now() / 1000) - (guestData.last_activity || 0);
+                
+                // If less than 24 hours since last activity, try to restore session
+                if (timeSinceActivity < 86400) {
+                    // Show restore session option
+                    const restoreDiv = document.createElement('div');
+                    restoreDiv.className = 'alert alert-info mt-3';
+                    restoreDiv.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-info-circle me-2"></i>You have an active guest session</span>
+                            <div>
+                                <button class="btn btn-sm btn-primary me-2" onclick="restoreGuestSession()">Continue as Guest</button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="clearGuestSession()">New Session</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const cardBody = document.querySelector('.card-body');
+                    cardBody.appendChild(restoreDiv);
+                } else {
+                    // Session expired, clear it
+                    clearGuestSession();
+                }
+            }
+        }
+
+        function restoreGuestSession() {
+            const guestSession = JSON.parse(localStorage.getItem('clicksafe_guest_session'));
+            
+            // Try to restore the session by checking with the server
+            fetch('api/session_heartbeat.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    guest_id: guestSession.guest_id,
+                    action: 'check'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Session is still valid, redirect to main page
+                    window.location.href = 'main_page.php?guest=1';
+                } else {
+                    // Session expired, clear and show message
+                    clearGuestSession();
+                    alert('Your previous session has expired. Please start a new guest session.');
+                }
+            })
+            .catch(error => {
+                // If server check fails, try to create new session with same guest_id
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'guest_login.php';
+                
+                const guestIdInput = document.createElement('input');
+                guestIdInput.type = 'hidden';
+                guestIdInput.name = 'guest_id';
+                guestIdInput.value = guestSession.guest_id;
+                
+                form.appendChild(guestIdInput);
+                document.body.appendChild(form);
+                form.submit();
+            });
+        }
+
+        function clearGuestSession() {
+            localStorage.removeItem('clicksafe_guest_session');
+            localStorage.removeItem('clicksafe_session_active');
+            
+            // Remove the restore session alert if present
+            const alert = document.querySelector('.alert-info');
+            if (alert) {
+                alert.remove();
+            }
+        }
+    </script>
+    <script>
+    // Dark mode toggle logic
+    function setDarkMode(enabled) {
+        if (enabled) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', '1');
+            document.getElementById('darkToggleIcon').className = 'bi bi-sun';
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('darkMode', '0');
+            document.getElementById('darkToggleIcon').className = 'bi bi-moon';
+        }
+    }
+    document.getElementById('darkToggle').onclick = function() {
+        setDarkMode(!document.body.classList.contains('dark-mode'));
+    };
+    // On load, set mode from localStorage
+    window.onload = function() {
+        if (localStorage.getItem('darkMode') === '1') {
+            setDarkMode(true);
+        } else {
+            setDarkMode(false);
+        }
+        
+        // Check for existing guest session
+        checkExistingGuestSession();
+        
+        // Show error if redirected with error param
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('error')) {
+            const errorMessage = decodeURIComponent(params.get('error'));
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-2"></i>${errorMessage}`;
+            errorDiv.style.display = 'block';
+            errorDiv.classList.add('alert', 'alert-danger');
+        }
+        if (params.has('success')) {
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.innerHTML = `<i class="bi bi-check-circle-fill me-2"></i>Account created successfully! Please log in.`;
+            errorDiv.style.display = 'block';
+            errorDiv.classList.remove('text-danger');
+            errorDiv.classList.add('alert', 'alert-success');
+        }
+    };
+    </script>
+</body>
+</html>

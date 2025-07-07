@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Results - ClickSafe</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/icons/shield-lock.svg">
+    <!-- Roboto font for clean look -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            background: var(--white);
+            color: var(--text-primary);
+        }
+        body.dark-mode, .dark-mode, html.dark-mode, html body.dark-mode {
+            background: var(--white) !important;
+            color: var(--text-primary) !important;
+        }
+        :root {
+            --navy: #0a2342;
+            --blue: #1877f2;
+            --white: #fff;
+            --gray: #f8f9fa;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+            --text-primary: #0a2342;
+            --text-secondary: #3a4a5d;
+            --card-bg: #fff;
+            --footer-bg: #0a2342;
+            --footer-text: #fff;
+        }
+        body.dark-mode, .dark-mode {
+            --navy: #e0e0e0;
+            --blue: #2196f3;
+            --white: #121212;
+            --gray: #1e1e1e;
+            --shadow: none;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --card-bg: #1e1e1e;
+            --footer-bg: #181818;
+            --footer-text: #e0e0e0;
+        }
+        html, body {
+            height: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .results-container, .container {
+            flex: 1 0 auto;
+        }
+        .footer {
+            flex-shrink: 0;
+            margin-top: 0 !important;
+            padding-top: 2rem !important;
+            background: var(--footer-bg, #0a2342);
+            color: var(--footer-text, #fff);
+        }
+        .footer.mt-5 { margin-top: 0 !important; }
+        .footer.pt-4 { padding-top: 2rem !important; }
+        html, body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: var(--white);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        .navbar {
+            background: var(--white) !important;
+            box-shadow: 0 2px 8px rgba(10,35,66,0.04);
+            padding-top: 0.7rem;
+            padding-bottom: 0.7rem;
+        }
+        .navbar-brand {
+            color: var(--navy) !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+        }
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--blue);
+            margin-right: 0.5rem;
+        }
+        .dark-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--navy);
+            font-size: 1.5rem;
+            margin-left: 1rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .dark-mode .dark-toggle-btn {
+            color: #ffd600;
+        }
+        .profile-dropdown .dropdown-toggle {
+            background: none;
+            border: none;
+            color: var(--navy);
+            font-size: 1.3rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        .profile-dropdown .dropdown-menu {
+            min-width: 8rem;
+        }
+        .results-container {
+            max-width: 900px;
+            margin: 4rem auto 2rem auto;
+        }
+        .card {
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            border: none;
+            transition: box-shadow 0.3s;
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+        .card.fullscreen {
+            position: fixed !important;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 2000;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: none;
+            max-height: none;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            background: var(--white);
+            overflow: auto;
+        }
+        .results-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .results-header .logo-icon {
+            font-size: 2.5rem;
+        }
+        .results-content {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 2.5rem 2rem;
+            font-family: 'Consolas', monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            min-height: 320px;
+            font-size: 1.15rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            box-shadow: 0 1px 4px rgba(10,35,66,0.04);
+            display: flex;
+            align-items: center;
+        }
+        .scan-no-result {
+            font-family: 'Roboto', Arial, sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            letter-spacing: 0.01em;
+            margin: auto;
+            display: block;
+        }
+        .btn-primary {
+            background: var(--blue);
+            border: none;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: #1456a0;
+        }
+        .status-badge {
+            font-size: 1rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+        .status-safe {
+            background: rgba(24,119,242,0.08);
+            color: var(--blue);
+        }
+        .status-warning {
+            background: rgba(255,193,7,0.15);
+            color: #ffc107;
+        }
+        .status-danger {
+            background: rgba(220,53,69,0.15);
+            color: #dc3545;
+        }
+        .fullscreen-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 2rem;
+            z-index: 10;
+        }
+        .footer {
+            background: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 2rem 0 1rem 0;
+        }
+        .footer a, .footer .bi {
+            color: var(--blue);
+            text-decoration: none;
+            margin-right: 0.5rem;
+        }
+        .footer a:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-shield-lock logo-icon"></i>ClickSafe
+            </a>
+            <button class="dark-toggle-btn" id="darkToggle" title="Toggle dark mode">
+                <i class="bi bi-moon" id="darkToggleIcon"></i>
+            </button>
+            <div class="ms-auto profile-dropdown dropdown">
+                <button class="dropdown-toggle d-flex align-items-center" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle me-2" style="font-size:1.7rem;"></i>
+                    <span class="d-none d-md-inline">User</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                    <li><a class="dropdown-item text-danger" href="login.html"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Results Section -->
+    <div class="results-container position-relative">
+        <div class="card p-4 position-relative" id="resultsCard">
+            <button class="btn btn-outline-secondary fullscreen-btn" id="fullscreenBtn" title="Toggle Fullscreen" onclick="toggleFullscreen()">
+                <i class="bi bi-arrows-fullscreen"></i>
+            </button>
+            <div class="results-header">
+                <i class="bi bi-shield-lock logo-icon mb-2"></i>
+                <h3 class="fw-bold mb-2">Scan Results</h3>
+                <div class="status-badge status-safe" id="statusBadge">
+                    <i class="bi bi-shield-check me-2"></i>Scan Complete
+                </div>
+            </div>
+            <div class="results-content" id="scanResults"><span class="scan-no-result">No results found.</span></div>
+            <div class="text-center">
+                <a href="main_page.php" class="btn btn-primary">
+                    <i class="bi bi-house-door me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="footer pt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-shield-lock logo-icon me-2"></i>
+                        <span class="fw-bold fs-5">ClickSafe</span>
+                    </div>
+                    <p class="mb-0">&copy; 2024 ClickSafe. All rights reserved.</p>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0 text-center">
+                    <div class="mb-2">Quick Links</div>
+                    <a href="index.html#services">Services</a> |
+                    <a href="index.html#about">About</a> |
+                    <a href="safe_browsing.html">Safe Browsing</a> |
+                    <a href="login.html">Login</a>
+                </div>
+                <div class="col-md-4 text-md-end text-center">
+                    <div class="mb-2">Contact Us</div>
+                    <a href="#" title="Email"><i class="bi bi-envelope"></i></a>
+                    <a href="#" title="Twitter"><i class="bi bi-twitter"></i></a>
+                    <a href="#" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const scanType = urlParams.get('type');
+            const scanValue = urlParams.get('value');
+            const isGuest = urlParams.get('guest') === '1';
+            const guestId = urlParams.get('guest_id');
+            const fromExtension = urlParams.get('from_extension') === '1';
+            const autoScan = urlParams.get('auto_scan') === '1';
+            
+            // If this is from extension with auto_scan, perform the scan automatically
+            if (fromExtension && autoScan && scanValue && scanType === 'URL') {
+                performGuestUrlScan(scanValue, guestId);
+                return;
+            }
+            
+            // Check for guest scan result from Flask API
+            if (isGuest && guestId && scanValue && scanType === 'URL') {
+                // Try to get cached result first
+                fetch(`http://127.0.0.1:5000/guest_scan_result?guest_id=${encodeURIComponent(guestId)}&url=${encodeURIComponent(scanValue)}&cached=1`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    }
+                    throw new Error('No cached result');
+                })
+                .then(result => {
+                    displayScanResult(result);
+                })
+                .catch(error => {
+                    // No cached result, trigger new scan
+                    if (!fromExtension) {
+                        performGuestUrlScan(scanValue, guestId);
+                    }
+                });
+            }
+            
+            // Regular result from localStorage
+            var result = localStorage.getItem('result');
+            var scanResults = document.getElementById('scanResults');
+            if (result && result.trim() && result.trim() !== '<span class=\'scan-no-result\'>No results found.</span>') {
+                displayScanResult(result);
+                
+                // Update scan history
+                if (scanType && scanValue) {
+                    fetch('api/scan_manager.php?action=add_scan', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            scan_type: scanType.toLowerCase(),
+                            target: scanValue,
+                            scan_results: result
+                        })
+                    }).catch(error => console.error('Error updating scan history:', error));
+                }
+                
+                // Clear the result after displaying to avoid stale data
+                localStorage.removeItem('result');
+            } else if (!isGuest && !fromExtension) {
+                scanResults.innerHTML = "<span class='scan-no-result'>No results found. (The scan may have failed or returned no data.)</span>";
+            }
+        });
+        
+        function performGuestUrlScan(url, guestId) {
+            const scanResults = document.getElementById('scanResults');
+            const statusBadge = document.getElementById('statusBadge');
+            
+            // Show loading state
+            scanResults.innerHTML = `
+                <div style="text-align: center; margin: auto;">
+                    <div style="border: 4px solid #f3f3f3; border-top: 4px solid #1877f2; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto;"></div>
+                    <div style="font-family: 'Roboto', Arial, sans-serif; font-size: 1.2rem; color: var(--text-primary);">Scanning URL...</div>
+                    <div style="font-family: 'Roboto', Arial, sans-serif; font-size: 0.9rem; color: var(--text-secondary); margin-top: 10px;">${url}</div>
+                </div>
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                </style>
+            `;
+            
+            statusBadge.className = 'status-badge status-warning';
+            statusBadge.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Scanning...';
+            
+            // Try the main Flask API first (grad/grad/url/urlScan/api.py)
+            const formData = new FormData();
+            formData.append('url', url);
+            if (guestId) {
+                formData.append('guest_id', guestId);
+            }
+            
+            // Try the full-featured API first
+            fetch('http://127.0.0.1:5000/scanurl', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const result = data.result;
+                const enhancedData = data.enhanced_data;
+                displayScanResult(result, enhancedData);
+            })
+            .catch(error => {
+                console.error('Main API failed, trying enhanced API:', error);
+                
+                // Try the enhanced API endpoint
+                fetch('http://127.0.0.1:5000/enhanced_scan', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        displayScanResult(data.result, data);
+                    } else {
+                        throw new Error(data.error || 'Enhanced scan failed');
+                    }
+                })
+                .catch(enhancedError => {
+                    console.error('Enhanced API failed, trying fallback:', enhancedError);
+                    
+                    // Final fallback to the simpler API
+                    const fallbackFormData = new FormData();
+                    fallbackFormData.append('url', url);
+                    
+                    fetch('http://127.0.0.1:5000/scanurl', {
+                        method: 'POST',
+                        body: fallbackFormData
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.text(); // Simple API returns text
+                    })
+                    .then(result => {
+                        displayScanResult(result);
+                    })
+                    .catch(fallbackError => {
+                        console.error('All APIs failed:', fallbackError);
+                        scanResults.innerHTML = `
+                            <div style="text-align: center; margin: auto; font-family: 'Roboto', Arial, sans-serif;">
+                                <i class="bi bi-exclamation-triangle" style="font-size: 3rem; color: #dc3545; margin-bottom: 1rem;"></i>
+                                <div style="font-size: 1.3rem; color: #dc3545; margin-bottom: 0.5rem;">Scan Failed</div>
+                                <div style="font-size: 1rem; color: var(--text-secondary);">Unable to scan the URL. Please make sure the Flask API is running on port 5000.</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 10px;">${url}</div>
+                                <div style="margin-top: 20px;">
+                                    <button onclick="performGuestUrlScan('${url}', '${guestId}')" class="btn btn-primary">Try Again</button>
+                                </div>
+                            </div>
+                        `;
+                        statusBadge.className = 'status-badge status-danger';
+                        statusBadge.innerHTML = '<i class="bi bi-shield-x me-2"></i>Scan Failed';
+                    });
+                });
+            });
+        }
+        
+        function displayScanResult(result, enhancedData = null) {
+            const scanResults = document.getElementById('scanResults');
+            const statusBadge = document.getElementById('statusBadge');
+            
+            if (result && result.trim()) {
+                // Check if we have enhanced data from the new backend
+                if (enhancedData && enhancedData.backend_type === 'enhanced') {
+                    displayEnhancedResult(result, enhancedData);
+                } else {
+                    // Display regular result
+                    scanResults.innerHTML = result;
+                }
+                
+                // Update status badge based on results
+                let detectionResult = null;
+                if (enhancedData && enhancedData.detection) {
+                    detectionResult = enhancedData.detection.toLowerCase();
+                } else {
+                    detectionResult = result.toLowerCase();
+                }
+                
+                if (detectionResult.includes('malicious') || detectionResult.includes('threat')) {
+                    statusBadge.className = 'status-badge status-danger';
+                    statusBadge.innerHTML = '<i class="bi bi-shield-x me-2"></i>Malicious URL Detected';
+                } else if (detectionResult.includes('suspicious') || detectionResult.includes('warning')) {
+                    statusBadge.className = 'status-badge status-warning';
+                    statusBadge.innerHTML = '<i class="bi bi-shield-exclamation me-2"></i>Suspicious Activity';
+                } else if (detectionResult.includes('benign') || detectionResult.includes('safe')) {
+                    statusBadge.className = 'status-badge status-safe';
+                    statusBadge.innerHTML = '<i class="bi bi-shield-check me-2"></i>URL is Safe';
+                } else {
+                    statusBadge.className = 'status-badge status-safe';
+                    statusBadge.innerHTML = '<i class="bi bi-shield-check me-2"></i>Scan Complete';
+                }
+            } else {
+                scanResults.innerHTML = "<span class='scan-no-result'>No results found. (The scan may have failed or returned no data.)</span>";
+                statusBadge.className = 'status-badge status-safe';
+                statusBadge.innerHTML = '<i class="bi bi-shield-check me-2"></i>Scan Complete';
+            }
+        }
+        
+        function displayEnhancedResult(result, enhancedData) {
+            const scanResults = document.getElementById('scanResults');
+            const scores = enhancedData.scores || {};
+            const detection = enhancedData.detection || 'Unknown';
+            const detailedScores = enhancedData.detailed_scores || {};
+            
+            // Create enhanced display with progress bars and detailed breakdown
+            let enhancedHTML = `
+                <div class="enhanced-result-container">
+                    <!-- Main Result Text -->
+                    <div class="main-result-text" style="white-space: pre-line; font-family: 'Roboto Mono', monospace; font-size: 0.9rem; line-height: 1.5; margin-bottom: 2rem;">
+                        ${result}
+                    </div>
+                    
+                    <!-- Enhanced Breakdown -->
+                    <div class="enhanced-breakdown">
+                        <h5 style="color: var(--blue); margin-bottom: 1.5rem;">
+                            <i class="bi bi-graph-up me-2"></i>Detailed Analysis Breakdown
+                        </h5>
+                        
+                        <div class="row g-3">
+            `;
+            
+            // Add score cards for each feature
+            const scoreCards = [
+                { key: 'blacklist', icon: 'bi-shield-exclamation', name: 'Blacklist Check', color: '#dc3545' },
+                { key: 'lexical', icon: 'bi-type', name: 'Lexical Analysis', color: '#fd7e14' },
+                { key: 'host_based', icon: 'bi-globe', name: 'Host Analysis', color: '#20c997' },
+                { key: 'content_based', icon: 'bi-file-text', name: 'Content Analysis', color: '#6f42c1' }
+            ];
+            
+            scoreCards.forEach(card => {
+                const score = scores[card.key] || 0;
+                const maxScore = 5.0;
+                const percentage = Math.min((score / maxScore) * 100, 100);
+                const description = detailedScores[card.key]?.description || 'Analysis component';
+                
+                enhancedHTML += `
+                    <div class="col-md-6 col-lg-3">
+                        <div class="score-card" style="background: var(--card-bg); border-radius: 0.75rem; padding: 1.25rem; box-shadow: var(--shadow); border-left: 4px solid ${card.color};">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="${card.icon}" style="font-size: 1.5rem; color: ${card.color}; margin-right: 0.75rem;"></i>
+                                <div>
+                                    <h6 class="mb-0" style="color: var(--text-primary); font-weight: 600;">${card.name}</h6>
+                                    <small style="color: var(--text-secondary);">${description}</small>
+                                </div>
+                            </div>
+                            <div class="score-display mb-2">
+                                <span style="font-size: 1.5rem; font-weight: 700; color: ${card.color};">${score.toFixed(1)}</span>
+                                <span style="color: var(--text-secondary); font-size: 0.9rem;">/${maxScore}</span>
+                            </div>
+                            <div class="progress" style="height: 8px; background-color: rgba(0,0,0,0.1); border-radius: 4px;">
+                                <div class="progress-bar" style="width: ${percentage}%; background-color: ${card.color}; border-radius: 4px; transition: width 0.3s ease;"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            enhancedHTML += `
+                        </div>
+                        
+                        <!-- Detection Summary -->
+                        <div class="detection-summary mt-4" style="background: var(--card-bg); border-radius: 0.75rem; padding: 1.5rem; box-shadow: var(--shadow);">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h5 style="color: var(--text-primary); margin-bottom: 0.5rem;">
+                                        <i class="bi bi-cpu me-2"></i>AI Detection Result
+                                    </h5>
+                                    <p style="color: var(--text-secondary); margin-bottom: 0;">
+                                        Advanced multi-feature analysis using weighted coefficient evaluation
+                                    </p>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    ${getDetectionBadge(detection)}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Backend Info -->
+                        <div class="backend-info mt-3" style="text-align: center; color: var(--text-secondary); font-size: 0.85rem;">
+                            <i class="bi bi-gear me-1"></i>
+                            Powered by Enhanced ClickSafe Backend Engine v2.0
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            scanResults.innerHTML = enhancedHTML;
+        }
+        
+        function getDetectionBadge(detection) {
+            const detectionLower = detection.toLowerCase();
+            if (detectionLower === 'malicious') {
+                return `<span class="badge detection-badge detection-malicious" style="background: #dc3545; color: white; font-size: 1rem; padding: 0.75rem 1rem;">
+                    <i class="bi bi-exclamation-triangle me-2"></i>MALICIOUS
+                </span>`;
+            } else if (detectionLower === 'suspicious') {
+                return `<span class="badge detection-badge detection-suspicious" style="background: #fd7e14; color: white; font-size: 1rem; padding: 0.75rem 1rem;">
+                    <i class="bi bi-shield-exclamation me-2"></i>SUSPICIOUS
+                </span>`;
+            } else if (detectionLower === 'benign') {
+                return `<span class="badge detection-badge detection-benign" style="background: #198754; color: white; font-size: 1rem; padding: 0.75rem 1rem;">
+                    <i class="bi bi-shield-check me-2"></i>SAFE
+                </span>`;
+            } else {
+                return `<span class="badge detection-badge detection-unknown" style="background: #6c757d; color: white; font-size: 1rem; padding: 0.75rem 1rem;">
+                    <i class="bi bi-question-circle me-2"></i>${detection.toUpperCase()}
+                </span>`;
+            }
+        }
+        function toggleFullscreen() {
+            var card = document.getElementById('resultsCard');
+            var btn = document.getElementById('fullscreenBtn');
+            card.classList.toggle('fullscreen');
+            if (card.classList.contains('fullscreen')) {
+                btn.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
+            } else {
+                btn.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+            }
+        }
+        // Dark mode toggle logic
+        function setDarkMode(enabled) {
+            if (enabled) {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', '1');
+                document.getElementById('darkToggleIcon').className = 'bi bi-sun';
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', '0');
+                document.getElementById('darkToggleIcon').className = 'bi bi-moon';
+            }
+        }
+        document.getElementById('darkToggle').onclick = function() {
+            setDarkMode(!document.body.classList.contains('dark-mode'));
+        };
+        // On load, set mode from localStorage
+        window.onload = function() {
+            if (localStorage.getItem('darkMode') === '1') {
+                setDarkMode(true);
+            } else {
+                setDarkMode(false);
+            }
+        };
+    </script>
+</body>
+</html>

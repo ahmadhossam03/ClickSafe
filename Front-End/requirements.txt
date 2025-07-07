@@ -1,0 +1,5 @@
+Flask==2.3.3
+Flask-Cors==3.0.10
+# You might need to add other dependencies for your scanning logic, e.g.,
+# pefile
+# requests 
