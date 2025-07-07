@@ -1,0 +1,40 @@
+{% if result.logs.blacklist %}
+
+{% set bl_score = result.scores.blacklist %}
+{% set malicious = result.blacklist.malicious %}
+{% set suspicious = result.blacklist.suspicious %}
+{% set status = result.blacklist.status %}
+{% set reason = result.blacklist.reason %}
+
+{% if status == 'Safe' %}
+{% set bl_icon = "✅" %}
+{% set bl_class = "border-success text-success" %}
+{% set badge_class = "bg-success" %}
+{% elif 'suspicious' in status|lower %}
+{% set bl_icon = "⚠️" %}
+{% set bl_class = "border-warning text-warning" %}
+{% set badge_class = "bg-warning text-dark" %}
+{% else %}
+{% set bl_icon = "❌" %}
+{% set bl_class = "border-danger text-danger" %}
+{% set badge_class = "bg-danger" %}
+{% endif %}
+
+<div class="card mb-3 shadow-sm {{ bl_class }}">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">VirusTotal URL Analysis</h5>
+        <span class="badge {{ badge_class }} px-3 py-2">{{ status }}</span>
+    </div>
+    <div class="card-body">
+        <p class="card-text"><strong>Status:</strong> {{ bl_icon }} <span class="fw-bold">{{ status }}</span></p>
+        <p class="card-text"><strong>Reason:</strong> 🧾 {{ reason }}</p>
+        <hr>
+        <h6 class="text-muted mb-2">VirusTotal Detection Summary:</h6>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">🔴 Malicious Detections: <strong>{{ malicious }}</strong></li>
+            <li class="list-group-item">🟠 Suspicious Detections: <strong>{{ suspicious }}</strong></li>
+            <li class="list-group-item">📊 Blacklist Score: <strong>{{ bl_score }}</strong></li>
+        </ul>
+    </div>
+</div>
+{% endif %}

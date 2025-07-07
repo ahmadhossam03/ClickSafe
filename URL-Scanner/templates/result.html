@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ClickSafe Scan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- PDF Export -->
+    <script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+
+    <style>
+        :root {
+            --light-bg: #f4f6f8;
+            --light-text: #212529;
+            --card-bg-light: #ffffff;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .card, .accordion-body {
+            background-color: var(--card-bg-light);
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+        }
+
+        .card-header {
+            border-radius: 12px 12px 0 0;
+        }
+
+        .accordion-button::after {
+            transform: scale(1.2);
+        }
+
+        .accordion-button:not(.collapsed) {
+            color: #0d6efd;
+            background-color: #e7f1ff;
+        }
+
+        .accordion-item {
+            border: none;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        }
+
+        #scrollToTopBtn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: none;
+            border-radius: 50px;
+            padding: 10px 14px;
+        }
+
+        .header-controls button {
+            margin-left: 10px;
+        }
+
+        .floating-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .floating-controls {
+                right: 10px;
+            }
+        }
+
+        .score-card {
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            text-align: center;
+            background-color: #ffffff;
+        }
+
+        .score-badge {
+            font-size: 1rem;
+            padding: 8px 16px;
+            border-radius: 25px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container my-4" id="scan-report">
+    <!-- Title -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center flex-wrap">
+            <div class="d-flex align-items-center gap-3">
+                <h4 class="mb-0">
+                    <i class="bi bi-shield-check"></i> ClickSafe Scan Summary
+                </h4>
+                <a href="http://localhost/grad/main_page.php" class="btn btn-light btn-sm" style="font-weight: bold; color: #0d6efd;">
+                    <i class="bi bi-house"></i> Back to Main
+                </a>
+            </div>
+            <div class="header-controls mt-2 mt-sm-0">
+                <button class="btn btn-outline-light btn-sm" onclick="toggleDetails()" data-bs-toggle="tooltip" title="Show or hide the full report">
+                    <i class="bi bi-list-columns-reverse"></i> View Report
+                </button>
+                <button class="btn btn-outline-light btn-sm" onclick="exportPDF()" data-bs-toggle="tooltip" title="Download the report as PDF">
+                    <i class="bi bi-file-earmark-arrow-down-fill"></i> Export PDF
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <p><strong>Scanned URL:</strong></p>
+            <p class="text-muted">{{ result.url }}</p>
+
+            <p><strong>Result:</strong></p>
+            <div class="alert
+                {% if result.detection == 'Safe' %}
+                    alert-success
+                {% elif result.detection == 'Suspicious' %}
+                    alert-warning
+                {% else %}
+                    alert-danger
+                {% endif %}">
+
+                <strong>
+                    {% if result.detection == 'Safe' %}
+                    ✅ SAFE
+                    {% elif result.detection == 'Suspicious' %}
+                    ⚠️ SUSPICIOUS
+                    {% else %}
+                    ❌ MALICIOUS
+                    {% endif %}
+                </strong>
+            </div>
+
+            {% if result.identified_url %}
+            <div class="alert alert-info p-2 mb-3">
+                <strong>🔗 Normalized URL:</strong>
+                <span class="text-muted">{{ result.identified_url }}</span>
+            </div>
+            {% endif %}
+
+            <!-- Identification -->
+            <div class="accordion mb-4" id="identificationSummary">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingIdentSummary">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIdentSummary" aria-expanded="true" aria-controls="collapseIdentSummary">
+                            🔎 Module Description
+                        </button>
+                    </h2>
+                    <div id="collapseIdentSummary" class="accordion-collapse collapse show" aria-labelledby="headingIdentSummary">
+                        <div class="accordion-body">
+                            {% include 'partials/section_identification.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Status Grid -->
+            <div class="accordion mb-4" id="featureScoresAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFeatureScores">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFeatureScores" aria-expanded="false" aria-controls="collapseFeatureScores">
+                            📊 Feature Status
+                        </button>
+                    </h2>
+                    <div id="collapseFeatureScores" class="accordion-collapse collapse" aria-labelledby="headingFeatureScores" data-bs-parent="#featureScoresAccordion">
+                        <div class="accordion-body">
+                            <div class="row g-4">
+                                {% for label, icon, score in [
+                                ("Blacklist", "shield-lock", result.scores.blacklist),
+                                ("Lexical", "activity", result.scores.lexical),
+                                ("Host-Based", "globe2", result.scores.host_based),
+                                ("Content-Based", "file-earmark-code", result.scores.content_based)
+                                ] %}
+                                {% set status = "Unknown" %}
+                                {% set badge_class = "bg-secondary" %}
+                                {% if score <= 1.5 %}
+                                {% set status = "Safe" %}
+                                {% set badge_class = "bg-success" %}
+                                {% elif score <= 3 %}
+                                {% set status = "Suspicious" %}
+                                {% set badge_class = "bg-warning text-dark" %}
+                                {% else %}
+                                {% set status = "Malicious" %}
+                                {% set badge_class = "bg-danger" %}
+                                {% endif %}
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="score-card">
+                                        <div class="mb-2">
+                                            <i class="bi bi-{{ icon }} fs-4"></i>
+                                        </div>
+                                        <div class="fw-semibold">{{ label }} Status</div>
+                                        <div class="score-badge badge {{ badge_class }} mt-2">{{ status }}</div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Report -->
+    <div id="full-report" style="display: none;">
+        <div class="accordion" id="reportAccordion">
+            {% for section in [
+            ('Blacklist', '🛡️ VirusTotal URL Analysis', 'section_blacklist.html'),
+            ('Lexical', '⚡ URL Structure Analysis', 'section_lexical.html'),
+            ('Host', '🌐 Host Information Analysis', 'section_host.html'),
+            ('Content', '📄 Content-Based URL Scanner', 'section_content.html')
+            ] %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ section[0] }}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse{{ section[0] }}" aria-expanded="false"
+                            aria-controls="collapse{{ section[0] }}">
+                        {{ section[1] }}
+                    </button>
+                </h2>
+                <div id="collapse{{ section[0] }}" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        {% include 'partials/' + section[2] %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Floating Controls -->
+<div class="floating-controls">
+    <button class="btn btn-outline-secondary" onclick="expandAllAccordions()" data-bs-toggle="tooltip" title="Expand all sections">
+        <i class="bi bi-arrows-expand"></i> Expand All
+    </button>
+    <button class="btn btn-outline-secondary" onclick="collapseAllAccordions()" data-bs-toggle="tooltip" title="Collapse all sections">
+        <i class="bi bi-arrows-collapse"></i> Collapse All
+    </button>
+</div>
+
+<!-- Scroll to Top -->
+<button id="scrollToTopBtn" class="btn btn-primary" onclick="scrollToTop()" data-bs-toggle="tooltip" title="Back to top">
+    <i class="bi bi-arrow-up"></i>
+</button>
+
+<script>
+    function toggleDetails() {
+        const report = document.getElementById("full-report");
+        report.style.display = report.style.display === "none" ? "block" : "none";
+    }
+
+    function exportPDF() {
+        const element = document.getElementById("scan-report");
+        const opt = {
+            margin: 0.5,
+            filename: 'ClickSafe_Report.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
+
+    function expandAllAccordions() {
+        document.querySelectorAll('.accordion-collapse').forEach(item => {
+            new bootstrap.Collapse(item, { toggle: false }).show();
+        });
+    }
+
+    function collapseAllAccordions() {
+        document.querySelectorAll('.accordion-collapse').forEach(item => {
+            new bootstrap.Collapse(item, { toggle: false }).hide();
+        });
+    }
+
+    window.onscroll = function () {
+        document.getElementById("scrollToTopBtn").style.display =
+            (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200)
+                ? "block" : "none";
+    };
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
+    });
+</script>
+</body>
+</html>

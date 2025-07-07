@@ -1,0 +1,86 @@
+<!-- 🔍 Feature Descriptions Section -->
+<p class="section-title">What Each Module Checks</p>
+
+<div class="accordion" id="featureAccordion">
+
+    <!-- VirusTotal -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingVirusTotal">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVirusTotal" aria-expanded="false" aria-controls="collapseVirusTotal">
+                📌 VirusTotal URL Analysis
+            </button>
+        </h2>
+        <div id="collapseVirusTotal" class="accordion-collapse collapse" aria-labelledby="headingVirusTotal" data-bs-parent="#featureAccordion">
+            <div class="accordion-body">
+                This module integrates the system with VirusTotal, a well-known online scanning service that checks URLs against multiple antivirus and security engines.
+                It submits the URLs for scanning if no prior analysis exists, and retrieves reports showing whether a URL is safe, suspicious or malicious.
+                It helps protect users by identifying potential threats based on VirusTotal’s aggregated threat intelligence.
+            </div>
+        </div>
+    </div>
+
+    <!-- URL Structure -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingLexical">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLexical" aria-expanded="false" aria-controls="collapseLexical">
+                📌 URL Structure Analysis
+            </button>
+        </h2>
+        <div id="collapseLexical" class="accordion-collapse collapse" aria-labelledby="headingLexical" data-bs-parent="#featureAccordion">
+            <div class="accordion-body">
+                This feature analyzes the structure and characters inside a URL to identify suspicious patterns. It examines:
+                <ul>
+                    <li>Length of the URL, domain, and path</li>
+                    <li>Counts of special characters (dots, slashes, hyphens, symbols, numbers)</li>
+                    <li>Suspicious patterns:
+                        <ul>
+                            <li>Unusual TLDs (e.g. .xyz, .tk)</li>
+                            <li>Phishing words (like “free,” “login,” or “secure”)</li>
+                            <li>Executable file extensions (.exe, .zip)</li>
+                            <li>URL shorteners or raw IPs</li>
+                        </ul>
+                    </li>
+                </ul>
+                <strong>Numeric Features</strong> measure URL complexity.<br>
+                <strong>Binary Features</strong> detect risky patterns.<br>
+            </div>
+        </div>
+    </div>
+
+    <!-- Host Info -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingHost">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHost" aria-expanded="false" aria-controls="collapseHost">
+                📌 Host Information Analysis
+            </button>
+        </h2>
+        <div id="collapseHost" class="accordion-collapse collapse" aria-labelledby="headingHost" data-bs-parent="#featureAccordion">
+            <div class="accordion-body">
+                This feature performs host-based analysis by extracting domain-level attributes like global rank, subdomain count ,and ASN ownership.
+                It checks ASN and hosting countries against known high-risk providers and assigns a host risk score to reveal potentially suspicious infrastructure or low reputation.
+            </div>
+        </div>
+    </div>
+
+    <!-- Content-Based -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingContent">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseContent" aria-expanded="false" aria-controls="collapseContent">
+                📌 Content-Based URL Scanner
+            </button>
+        </h2>
+        <div id="collapseContent" class="accordion-collapse collapse" aria-labelledby="headingContent" data-bs-parent="#featureAccordion">
+            <div class="accordion-body">
+                This module performs deep content analysis of web pages using headless browser rendering to fetch and inspect dynamic HTML and scripts.
+                It detects:
+                <ul>
+                    <li>It analyzes HTML for suspicious elements like hidden or layered iframes (clickjacking), insecure form actions, mailto links, and redirects.</li>
+                    <li>IIt extracts and inspects JavaScript—both inline and external—detecting suspicious obfuscation patterns, or popup triggers.</li>
+                    <li>Security signals like HTTPS usage, SSL certificate validity (via OpenSSL and Certifi).</li>
+                </ul>
+                The system aggregates scores across HTML, JavaScript, and SSL checks, producing a final result (Safe, Suspicious, High, Malicious), even for previously unknown URLs.
+            </div>
+        </div>
+    </div>
+
+</div>

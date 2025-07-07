@@ -1,0 +1,112 @@
+{% if result.logs.content %}
+
+
+{% set content_score = result.scores.content_based %}
+{% if content_score <= 1.5 %}
+{% set content_status = "Safe" %}
+{% set content_class = "border-success text-success" %}
+{% set badge_class = "bg-success" %}
+{% set content_icon = "✅" %}
+{% elif content_score <= 3 %}
+{% set content_status = "Suspicious" %}
+{% set content_class = "border-warning text-warning" %}
+{% set badge_class = "bg-warning text-dark" %}
+{% set content_icon = "⚠️" %}
+{% else %}
+{% set content_status = "Malicious" %}
+{% set content_class = "border-danger text-danger" %}
+{% set badge_class = "bg-danger" %}
+{% set content_icon = "❌" %}
+{% endif %}
+
+<div class="card mb-4 shadow-sm {{ content_class }}">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Content-Based Verdict</h5>
+        <span class="badge {{ badge_class }} px-3 py-2">{{ content_status }}</span>
+    </div>
+    <div class="card-body">
+        <p><strong>Status:</strong> {{ content_icon }} {{ content_status }}</p>
+    </div>
+</div>
+{% endif %}
+
+<!-- 🔍 Content Feature Collapsible Sections -->
+{% set content_sections = [
+("HTML Analysis", result.logs.html_analysis, "collapseHtml"),
+("JavaScript Analysis", result.logs.javascript_analysis, "collapseJs"),
+("Security Headers", result.logs.security_headers, "collapseHeaders"),
+("SSL Certificate", result.logs.ssl_certificate, "collapseSsl")
+] %}
+
+{% for title, log, collapse_id in content_sections %}
+{% if log %}
+<div class="card mb-3 shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">{{ title }}</h6>
+        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#{{ collapse_id }}">
+            Toggle Details
+        </button>
+    </div>
+    <div class="collapse" id="{{ collapse_id }}">
+        <div class="card-body table-responsive p-2">
+            <table class="table table-sm table-bordered align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Feature</th>
+                    {% if title == "SSL Certificate" %}
+                    <th>Value</th>
+                    <th>Explanation</th>
+                    {% else %}
+                    <th>Risk Score</th>
+                    <th>Explanation</th>
+                    {% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in log %}
+                <tr>
+                    <td>{{ item.feature or item.key or "Unknown" }}</td>
+                    {% if title == "SSL Certificate" %}
+                    <td>
+                        {% if item.raw is defined %}
+                        {% set val = item.raw|lower %}
+                        {% if "valid" in val or "trusted" in val or "yes" in val %}
+                        <span class="badge bg-success text-light">{{ item.raw }}</span>
+                        {% elif "self-signed" in val or "short" in val or "not verified" in val %}
+                        <span class="badge bg-warning text-dark">{{ item.raw }}</span>
+                        {% elif "expired" in val or "untrusted" in val or "no" in val or "invalid" in val %}
+                        <span class="badge bg-danger text-light">{{ item.raw }}</span>
+                        {% else %}
+                        <span class="badge bg-secondary text-light">{{ item.raw }}</span>
+                        {% endif %}
+                        {% else %}
+                        <span class="badge bg-light text-muted">N/A</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ item.explanation or "N/A" }}</td>
+                    {% else %}
+                    <td>
+                        {% if item.score is defined %}
+                        {% set score = item.score %}
+                        {% if score|float <= 1 %}
+                        <span class="badge bg-success" title="Low Risk">Low</span>
+                        {% elif score|float == 3 %}
+                        <span class="badge bg-warning text-dark" title="Medium Risk">Medium</span>
+                        {% else %}
+                        <span class="badge bg-danger" title="High Risk">High</span>
+                        {% endif %}
+                        {% else %}
+                        <span class="badge bg-secondary">N/A</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ item.explanation or "N/A" }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}

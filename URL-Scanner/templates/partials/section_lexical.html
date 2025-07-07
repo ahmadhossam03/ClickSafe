@@ -1,0 +1,98 @@
+{% if result.logs and result.logs.lexical %}
+
+
+{% set lex_score = result.scores.lexical %}
+{% if lex_score < 2 %}
+{% set lex_status = "Safe" %}
+{% set lex_class = "border-success text-success" %}
+{% set badge_class = "bg-success" %}
+{% set lex_icon = "✅" %}
+{% elif lex_score < 3.5 %}
+{% set lex_status = "Suspicious" %}
+{% set lex_class = "border-warning text-warning" %}
+{% set badge_class = "bg-warning text-dark" %}
+{% set lex_icon = "⚠️" %}
+{% else %}
+{% set lex_status = "Malicious" %}
+{% set lex_class = "border-danger text-danger" %}
+{% set badge_class = "bg-danger" %}
+{% set lex_icon = "❌" %}
+{% endif %}
+
+<div class="card mb-4 shadow-sm {{ lex_class }}">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">URL Structure Verdict</h5>
+        <span class="badge {{ badge_class }} px-3 py-2">{{ lex_status }}</span>
+    </div>
+    <div class="card-body">
+        <p><strong>Status:</strong> {{ lex_icon }} {{ lex_status }}</p>
+    </div>
+</div>
+
+<!-- Lexical Feature Sections -->
+{% set lexical_sections = [
+("Numeric Feature Analysis", "collapseLexicalNumeric", "Count =", false),
+("Binary Feature Analysis", "collapseLexicalBinary", "Presence =", true)
+] %}
+
+{% for section_title, collapse_id, keyword, is_binary in lexical_sections %}
+<div class="card mb-3 shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">🔍 {{ section_title }}</h6>
+        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#{{ collapse_id }}">
+            Toggle Details
+        </button>
+    </div>
+    <div class="collapse" id="{{ collapse_id }}">
+        <div class="card-body table-responsive p-2">
+            <table class="table table-sm table-bordered align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Feature</th>
+                    <th>Risk Level</th>
+                    <th>Explanation</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for line in result.logs.lexical %}
+                {% if keyword in line %}
+                {% set parts = line.split(":") %}
+                {% set raw_feature = parts[0].strip() %}
+                {% set feature = raw_feature.replace('_', ' ').title() %}
+
+                {% set risk = 'Unknown' %}
+                {% set explanation = '—' %}
+
+                {% if 'Risk Level =' in line and 'Explanation =' in line %}
+                {% set rest = line.split('Risk Level =')[1] %}
+                {% set risk_part = rest.split(', Explanation =')[0].strip() %}
+                {% set explanation_part = rest.split(', Explanation =')[1].strip() %}
+                {% set risk = risk_part %}
+                {% set explanation = explanation_part %}
+                {% endif %}
+
+                <tr>
+                    <td>{{ feature }}</td>
+                    <td>
+                        {% if risk == "1" %}
+                        <span class="badge bg-success">Low</span>
+                        {% elif risk == "3" %}
+                        <span class="badge bg-warning text-dark">Medium</span>
+                        {% elif risk == "5" %}
+                        <span class="badge bg-danger">High</span>
+                        {% else %}
+                        <span class="badge bg-secondary">{{ risk }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ explanation }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endif %}

@@ -1,0 +1,87 @@
+{% if result.logs.host %}
+
+{% set host_score = result.scores.host_based %}
+{% if host_score < 2 %}
+{% set host_status = "Safe" %}
+{% set host_class = "border-success text-success" %}
+{% set badge_class = "bg-success" %}
+{% set host_icon = "✅" %}
+{% elif host_score < 3.5 %}
+{% set host_status = "Suspicious" %}
+{% set host_class = "border-warning text-warning" %}
+{% set badge_class = "bg-warning text-dark" %}
+{% set host_icon = "⚠️" %}
+{% else %}
+{% set host_status = "Malicious" %}
+{% set host_class = "border-danger text-danger" %}
+{% set badge_class = "bg-danger" %}
+{% set host_icon = "❌" %}
+{% endif %}
+
+<div class="card mb-4 shadow-sm {{ host_class }}">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Host Information Analysis</h5>
+        <span class="badge {{ badge_class }} px-3 py-2">{{ host_status }}</span>
+    </div>
+    <div class="card-body">
+        <p><strong>Status:</strong> {{ host_icon }} {{ host_status }}</p>
+
+        <h6 class="mt-4 mb-2 text-muted">Host Feature Summary:</h6>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>Feature</th>
+                    <th>Risk Level</th>
+                    <th>Explanation</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for line in result.logs.host %}
+                {% if ":" in line and "|" in line and "Warning" not in line %}
+                {% set parts = line.split(":") %}
+                {% set feature = parts[0].strip() %}
+                {% set score_and_explanation = parts[1].split("|") %}
+                {% set score = score_and_explanation[0].strip() %}
+                {% set explanation = score_and_explanation[1].strip() %}
+                {% if score == "1" %}
+                {% set risk_level = "Low" %}
+                {% elif score == "3" %}
+                {% set risk_level = "Medium" %}
+                {% elif score == "5" %}
+                {% set risk_level = "High" %}
+                {% else %}
+                {% set risk_level = "Unknown" %}
+                {% endif %}
+                <tr>
+                    <td>{{ feature }}</td>
+                    <td>
+                        {% if risk_level == "Low" %}
+                        <span class="badge bg-success">Low</span>
+                        {% elif risk_level == "Medium" %}
+                        <span class="badge bg-warning text-dark">Medium</span>
+                        {% elif risk_level == "High" %}
+                        <span class="badge bg-danger">High</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Unknown</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ explanation }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+        {% for line in result.logs.host %}
+        {% if "Warning" in line %}
+        <div class="alert alert-danger mt-3 mb-0">
+            ⚠️ {{ line }}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
