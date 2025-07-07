@@ -19,3 +19,7 @@ ClickSafe is a cybersecurity project designed to mitigate the growing risks pose
 -At Sandbox, File is Executed and child processes is memory dumped and a dump file is returned to the host machine for analysis, While also identification of files dropped to chech their safety
 -Automatic VM cleaning system by reverting to a clean state snapshot after every file scan
 -Dump File is analyzed for deeper string analysis
+
+
+
+## CREDITS: Ahmed Hossam - Abdelrahman Khaled - Asem Ahmed - Rahma Hussein - Jana Hesham ##
