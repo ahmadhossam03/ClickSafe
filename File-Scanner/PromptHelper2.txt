@@ -1,0 +1,13 @@
+Examples of behaviors that indicate maliciousness:
+- Remote code injection
+- Unusual privilege escalation
+- Keystroke logging
+- Persistence using registry or services
+- Downloading or executing files from the internet
+- Bypassing security or anti-debugging
+
+Suspicious examples:
+- Gathering system info
+- Loading DLLs dynamically
+- Accessing foreground window
+- Writing to TEMP directories

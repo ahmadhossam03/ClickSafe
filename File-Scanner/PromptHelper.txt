@@ -1,0 +1,382 @@
+
+=== MALWARE STRING CLASSIFICATION RULES ===
+
+Categories:
+- Normal: No indication of threat.
+- Suspicious: May indicate malicious behavior depending on context.
+- Malicious: Commonly used in malware for known malicious behavior.
+
+Default rule:
+If no malicious or suspicious pattern is matched, classify as "Normal".
+
+Always use this format:
+<string> -> <Normal/Suspicious/Malicious> : <Short explanation if suspicious/malicious>
+
+
+HELPER GUIDE-------------------------------------------------------
+CreateMutex -> Suspicious : Indicates attempt to prevent multiple executions.
+CreateRemoteThread -> Malicious : Common in code injection techniques.
+VirtualAllocEx -> Malicious : Used to allocate memory in another process.
+LoadLibrary -> Suspicious : Used to load DLLs dynamically, could aid injection.
+URLDownloadToFile -> Malicious : Downloads files, often seen in droppers.
+InternetOpenUrl -> Suspicious : Could indicate remote communication.
+SetWindowsHookEx -> Suspicious : Can be used to capture keyboard or mouse input.
+ShellExecute -> Suspicious : Executes another program. Benign or malicious depending on target.
+BitBlt -> Suspicious : Can capture the screen, used by spyware.
+GetAsyncKeyState -> Malicious : Indicates keylogging behavior.
+RegSetValue -> Suspicious : May indicate persistence.
+OpenProcess -> Suspicious : Accessing other process memory, common in injectors.
+
+Accept  
+This function is used to listen for incoming connections. It indicates that the program will listen for incoming connections on a socket. It is mostly used by malware to communicate with their Command and Control server.
+
+AdjustTokenPrivileges  
+This function is used to enable or disable specific access privileges. In a process injection attack, this function is used by malware to gain additional permissions.
+
+AttachThreadInput  
+This function attaches the input processing from one thread to another so that the second thread receives input events such as keyboard and mouse events. Keyloggers and other spyware use this function.
+
+Bind  
+This function is used to associate a local address to a socket in order to listen for incoming connections.
+
+BitBlt  
+This function is used to copy graphic data from one device to another. Spyware sometimes uses this function to capture screenshots.
+
+CertOpenSystemStore  
+This function is used to access the certificates stored on the local system.
+
+Connect  
+This function is used to connect to a remote socket. Malware often uses low-level functionality to connect to a command-and-control server.
+
+ConnectNamedPipe  
+This function is used to create a server pipe for interprocess communication that will wait for a client pipe to connect. Backdoors and reverse shells sometimes use this function to simplify connectivity to a command-and-control server.
+
+ControlService  
+This function is used to start, stop, modify, or send a signal to a running service. Malware may use this if it is managing its own malicious service.
+
+CreateFile  
+Creates a new file or opens an existing file.
+
+CreateFileMapping  
+This function is used to create a handle to a file mapping that loads a file into memory and makes it accessible via memory addresses. Launchers, loaders, and injectors use this function to read and modify PE files.
+
+CreateMutex  
+This function creates a mutual exclusion object that can be used by malware to ensure only a single instance is running on a system.
+
+CreateProcess  
+This function creates and launches a new process. If malware uses this, the new process should be analyzed as well.
+
+CreateRemoteThread  
+This function is used to start a thread in a remote process. Launchers and stealth malware use it for code injection.
+
+CreateService  
+This function creates a service that can start at boot time. Malware uses it for persistence and stealth.
+
+CreateToolhelp32Snapshot  
+This function creates a snapshot of processes, heaps, threads, and modules. Malware uses this for enumerating system information.
+
+CryptAcquireContext  
+This function is often the first step in initializing Windows encryption. Malware uses it to begin cryptographic operations.
+
+DeviceIoControl  
+This function sends control messages from user space to a device driver. Used by kernel-level malware.
+
+EnableExecuteProtectionSupport  
+This function modifies Data Execution Protection (DEP) settings, making the system more vulnerable.
+
+EnumProcesses  
+This function enumerates running processes. Malware uses it to find target processes for injection.
+
+EnumProcessModules  
+This function lists loaded modules in a process. Malware uses it to find where to inject.
+
+FindFirstFile / FindNextFile  
+Used to enumerate files and directories.
+
+FindResource  
+This function finds a resource in an executable or DLL. Malware can store malicious data in resources.
+
+FindWindow  
+This function searches for an open window. Often used in anti-debugging.
+
+FtpPutFile  
+This function uploads files to an FTP server. Malware uses it for exfiltration.
+
+GetAdaptersInfo  
+Used to obtain information about network adapters. Malware may use it to detect virtual environments.
+
+GetAsyncKeyState  
+Used to detect if a key is pressed. Commonly used by keyloggers.
+
+GetDC  
+Returns a handle to a device context (e.g., for capturing the screen).
+
+GetForegroundWindow  
+Gets the currently focused window. Used by keyloggers.
+
+gethostbyname  
+Performs DNS lookup. Useful for identifying C2 infrastructure.
+
+gethostname  
+Retrieves the hostname of the system. Used in victim profiling.
+
+GetKeyState  
+Used to detect the state of a key. Used in keyloggers.
+
+GetModuleFilename  
+Returns the filename of the current module. Malware uses it to copy or rename itself.
+
+GetModuleHandle  
+Gets a handle to a loaded module. Used to locate injection targets.
+
+GetProcAddress  
+Retrieves the address of a function in a DLL. Used for dynamic imports.
+
+GetStartupInfo  
+Retrieves information about how the process was started.
+
+GetSystemDefaultLangId  
+Gets the system’s language ID. Malware may target specific regions.
+
+GetTempPath  
+Returns the path of the temp directory. Malware may use it to store files.
+
+GetThreadContext  
+Retrieves a thread’s context, including registers. Used in code injection.
+
+GetVersionEx  
+Returns the Windows version. Malware may adjust behavior based on OS.
+
+GetWindowsDirectory  
+Returns the path to the Windows directory. Malware may install here.
+
+inet_addr  
+Converts an IP string to a usable address. Can be used to detect hardcoded C2 IPs.
+
+InternetOpen  
+Initializes high-level Internet functions. Used before accessing URLs.
+
+InternetOpenUrl  
+Opens a connection to a URL via HTTP, HTTPS, or FTP.
+
+InternetReadFile  
+Reads from a previously opened URL.
+
+InternetWriteFile  
+Writes data to a URL.
+
+IsNTAdmin  
+Checks if the current user is an administrator.
+
+IsWow64Process  
+Checks if a 32-bit process is running on a 64-bit OS.
+
+LdrLoadDll  
+Low-level DLL loader. May indicate stealthy behavior.
+
+LoadResource  
+Loads a resource into memory. Used for embedded payloads.
+
+LsaEnumerateLogonSessions  
+Lists all logon sessions. Used in credential harvesting.
+
+MapViewOfFile  
+Maps a file into memory. Used in stealth injection.
+
+MapVirtualKey  
+Translates virtual key codes. Used by keyloggers.
+
+Module32First / Module32Next  
+Used to enumerate modules in a process.
+
+NetScheduleJobAdd  
+Schedules a task to run later. Malware can use this for persistence.
+
+NetShareEnum  
+Lists shared network drives.
+
+NtQueryDirectoryFile  
+Gets directory contents. Hooked by rootkits to hide files.
+
+NtQueryInformationProcess  
+Gets process info. Used in anti-debugging and process inspection.
+
+NtSetInformationProcess  
+Changes process privilege levels or disables DEP.
+
+OpenMutex  
+Opens an existing mutex. Malware uses fixed mutex names as indicators.
+
+OpenProcess  
+Gets a handle to another process. Used in injection techniques.
+
+OutputDebugString  
+Sends a message to the debugger. Used in anti-debugging.
+
+PeekNamedPipe  
+Reads from a named pipe without removing data. Used by reverse shells.
+
+Process32First / Process32Next  
+Enumerates running processes. Used by injectors.
+
+QueueUserAPC  
+Executes code in another thread. Used in stealthy code injection.
+
+ReadProcessMemory  
+Reads memory from another process. Common in credential theft and injection.
+
+RegisterHotKey  
+Registers a system-wide hotkey. Used by spyware for activation.
+
+RegOpenKey  
+Opens a registry key. Malware uses the registry for persistence.
+
+ResumeThread  
+Resumes a suspended thread. Used after code injection.
+
+RtlCreateRegistryKey  
+Creates a registry key from kernel mode.
+
+RtlWriteRegistryValue  
+Writes a registry value from kernel mode.
+
+SamIConnect  
+Connects to the SAM database. Used in password hash extraction.
+
+SamIGetPrivateData  
+Gets private user data from the SAM. Used by hash dumpers.
+
+SamQueryInformationUse  
+Queries user info from the SAM database.
+
+Send  
+Sends data to a remote server. Used by malware to exfiltrate data.
+
+SetFileTime  
+Modifies timestamps of a file. Used to hide activity.
+
+SetThreadContext  
+Modifies a thread’s context. Used in advanced injection.
+
+SetWindowsHookEx  
+Installs a system-wide hook. Often used in keyloggers.
+
+SfcTerminateWatcherThread  
+Disables file protection to allow tampering.
+
+ShellExecute  
+Executes another program. Can be used to launch malware.
+
+StartServiceCtrlDispatcher  
+Registers a process as a service.
+
+SuspendThread  
+Pauses a thread. Used before modifying it in injection.
+
+System  
+Runs a command-line instruction. Wraps around CreateProcess.
+
+Thread32First / Thread32Next  
+Enumerates threads in a process.
+
+Toolhelp32ReadProcessMemory  
+Reads process memory using Toolhelp32 API.
+
+URLDownloadToFile  
+Downloads a file from a URL to disk. Commonly used by droppers.
+
+VirtualAllocEx  
+Allocates memory in a remote process. Used in injection.
+
+VirtualProtectEx  
+Changes memory protection. Used to make memory executable.
+
+WideCharToMultiByte  
+Converts Unicode to ASCII. Used in string processing.
+
+WinExec  
+Executes another program.
+
+WriteProcessMemory  
+Writes data into another process. Used by malware in code injection.
+
+WSAStartup  
+Initializes network sockets. Start of networking code.
+
+VirtualAllocEx  
+This function allocates memory in the address space of another process. It is commonly used in process injection and code injection attacks.
+
+WriteProcessMemory  
+This function writes data to the memory of another process. Malware uses it for process hollowing, code injection, and similar attacks.
+
+CreateRemoteThread  
+This function creates a thread in another process. It is a classic technique for running malicious code in the context of another process.
+
+SetWindowsHookEx  
+This function installs a hook procedure for system events. It is often used by keyloggers and spyware to intercept keystrokes and mouse events.
+
+GetProcAddress  
+This function retrieves the address of an exported function or variable from a DLL. Malware uses it to dynamically resolve API calls, often to evade static analysis.
+
+LoadLibrary  
+This function loads a DLL into the address space of the calling process. Malware uses it to load malicious DLLs at runtime.
+
+NtQuerySystemInformation  
+This function retrieves various kinds of system information. Malware uses it for anti-analysis, sandbox detection, and privilege escalation.
+
+InternetOpenUrl  
+This function opens a URL. Malware uses it to download additional payloads or exfiltrate data.
+
+WinExec  
+This function runs a specified program. Malware uses it to execute other malicious binaries or scripts.
+
+RegSetValueEx  
+This function sets the data and type of a specified value under a registry key. Malware uses it for persistence by modifying registry keys.
+
+ZwUnmapViewOfSection  
+This function unmaps a section of memory in a process. It is used in process hollowing attacks to replace the memory of a legitimate process with malicious code.
+
+OpenProcess  
+This function opens an existing process object. Malware uses it to manipulate or inject code into other processes.
+
+TerminateProcess  
+This function terminates a process. Malware may use it to kill security software or competing malware.
+
+GetAsyncKeyState  
+This function checks the state of a key on the keyboard. It is often used by keyloggers to capture keystrokes.
+
+InternetConnect  
+This function establishes a connection to an FTP or HTTP server. Malware uses it to communicate with command and control servers.
+
+HttpSendRequest  
+This function sends an HTTP request to a server. Malware uses it for data exfiltration or to receive commands.
+
+WSAStartup  
+This function initiates use of the Winsock DLL. Malware uses it to enable network communication.
+
+ShellExecute  
+This function runs an external program. Malware uses it to launch other malicious binaries or scripts.
+
+NetUserAdd  
+This function adds a user account to a Windows system. Malware uses it to create unauthorized accounts for persistence.
+
+NetLocalGroupAddMembers  
+This function adds users to a local group. Malware uses it to escalate privileges or maintain persistence.
+
+CryptEncrypt  
+This function encrypts data. Ransomware uses it to encrypt user files.
+
+CryptDecrypt  
+This function decrypts data. Malware may use it to decrypt payloads or configuration data.
+
+FindWindow  
+This function retrieves a handle to a window. Malware uses it to detect sandbox or analysis environments.
+
+SetThreadContext  
+This function sets the context for a specified thread. Malware uses it in advanced process injection techniques.
+
+DeviceIoControl  
+This function sends a control code directly to a specified device driver. Malware uses it to interact with or exploit drivers.
+
+NtCreateSection  
+This function creates a section object. Malware uses it for process hollowing and code injection.

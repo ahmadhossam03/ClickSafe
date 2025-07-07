@@ -1,0 +1,27 @@
+VirusTotal Verdict: Safe
+-------------------------------
+[+] Overlay Offset: 1458176 | Entropy: 7.49
+[!] The file is likely packed.
+-------------------------------
+
+-------------------------------
+Summary: The file exhibits no suspicious or malicious behaviors. It doesn't attempt to inject code, escalate privileges, log keystrokes, establish persistence, download files, or bypass security measures. The file also doesn't gather system information, load DLLs dynamically, access the foreground window, or write to TEMP directories.
+
+Safe
+-------------------------------
+Installer Framework: Custom -> Non-Legitimate
+privileges -> Does Not Require Administration
+
+====================
+
+- Malicious Executables/DLLs: 0
+- Malicious IP Addresses: 0
+- Suspicious IP Addresses: 0
+- Dangerous Terms Found: 1
+-------------------------------
+
+  - No new EXE/DLL/SYS files were detected.
+-------------------------------
+
+  - 5.1.0.0 [Safe]
+-------------------------------

@@ -1,0 +1,32 @@
+VirusTotal Verdict: Malicious
+-------------------------------
+[+] Overlay Offset: 138240 | Entropy: 8.00
+[!] The file is likely packed.
+-------------------------------
+adjusttokenprivileges -> Used to enable or disable specific access privileges.
+createprocessw -> Executes another program. Benign or malicious depending on target.
+getprocaddress -> Used to load DLLs dynamically, could aid injection.
+loadlibraryexw -> Used to load DLLs dynamically, could aid injection.
+loadlibraryw -> Used to load DLLs dynamically, could aid injection.
+regopenkeyexw -> May indicate persistence.
+regqueryvalueexw -> May indicate persistence.
+-------------------------------
+Summary: This file uses multiple techniques for dynamic code loading and privilege manipulation, along with registry access, suggesting it may attempt to escalate privileges, inject code, and establish persistence. The file's behavior is indicative of malicious intent, specifically privilege escalation and persistence, further supported by the execution of other programs.
+File is Malicious
+-------------------------------
+Installer Framework: Inno Setup -> Legitimate
+privileges -> Does Not Require Administration
+
+====================
+
+- Malicious Executables/DLLs: 1
+- Malicious IP Addresses: 0
+- Suspicious IP Addresses: 0
+- Dangerous Terms Found: 0
+-------------------------------
+
+  - _shfoldr.dll -> Votes : "Malicious"-> 22
+-------------------------------
+
+  - 5.1.0.0 [Safe]
+-------------------------------

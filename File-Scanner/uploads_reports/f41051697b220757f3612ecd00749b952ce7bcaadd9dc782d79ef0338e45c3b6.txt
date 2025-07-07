@@ -1,0 +1,93 @@
+VirusTotal Verdict: Malicious
+-------------------------------
+[+] Overlay Offset: 1747968 | Entropy: 7.50
+[!] The file is likely packed.
+-------------------------------
+shellexecutew -> Executes another program. Benign or malicious depending on target.
+shellexecuteexw -> Executes another program. Benign or malicious depending on target.
+winhttpconnect -> Could indicate remote communication.
+winhttpgetproxyforurl -> Could indicate remote communication.
+-------------------------------
+Summary: The file executes other programs and establishes remote communication. It uses `shellexecutew` and `shellexecuteexw` to execute programs, which can be benign or malicious depending on the target. The use of `winhttpconnect` and `winhttpgetproxyforurl` suggests potential network activity, increasing suspicion.
+
+Suspicious
+-------------------------------
+Installer Framework: Unknown -> Non-Legitimate
+privileges -> Does Not Require Administration
+
+====================
+Security Analysis Summary:
+- Malicious Executables/DLLs: 0
+- Malicious IP Addresses: 0
+- Suspicious IP Addresses: 0
+- Dangerous Terms Found: 0
+-------------------------------
+
+  - cleanmgr.exe
+  - cmd.exe
+  - colorcpl.exe
+  - CompMgmtLauncher.exe
+  - cscui.dll
+  - cttune.exe
+  - dccw.exe
+  - DevicePairingWizard.exe
+  - dfrgui.exe
+  - displayswitch.exe
+  - IEXPLORE.EXE
+  - ImagingDevices.exe
+  - iscsicpl.exe
+  - lpksetup.exe
+  - mblctr.exe
+  - mdsched.exe
+  - migwiz.exe
+  - mmc.exe
+  - MSASCui.exe
+  - msdt.exe
+  - narrator.exe
+  - netplwiz.exe
+  - odbcad32.exe
+  - OptionalFeatures.exe
+  - perfmon.exe
+  - presentationsettings.exe
+  - psr.exe
+  - rekeywiz.exe
+  - rstrui.exe
+  - Rundll32.exe
+  - rundll32.exe
+  - sample_to_analyze.exe
+  - sapisvr.exe
+  - sidebar.exe
+  - slui.exe
+  - sndvol.exe
+  - SpeechUX.dll
+  - SystemPropertiesAdvanced.exe
+  - SystemPropertiesComputerName.exe
+  - SystemPropertiesPerformance.exe
+  - SystemPropertiesProtection.exe
+  - SystemPropertiesRemote.exe
+  - taskmgr.exe
+  - twain_32.dll
+  - UserAccountControlSettings.exe
+  - wfs.exe
+  - WindowsAnytimeUpgradeUI.exe
+  - xwizard.exe
+-------------------------------
+
+  - 101.2.1.1 [Safe]
+  - 101.3.4.1 [Safe]
+  - 2.3.4.5 [Safe]
+  - 2.5.29.1 [Safe]
+  - 2.5.4.10 [Safe]
+  - 3.14.3.2 [Safe]
+  - 3.6.1.4 [Safe]
+  - 4.5.6.7 [Safe]
+  - 5.1.0.0 [Safe]
+  - 5.2.3.5 [Safe]
+  - 5.5.5.1 [Safe]
+  - 5.5.7.1 [Safe]
+  - 5.5.8.2 [Safe]
+  - 5.7.1.1 [Safe]
+  - 5.7.2.2 [Safe]
+  - 5.7.48.1 [Safe]
+  - 6.7.8.9 [Safe]
+-------------------------------
